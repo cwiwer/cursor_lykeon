@@ -652,7 +652,7 @@ export default function Calendario() {
       setScheduleError(null);
 
       if (!activeChild?.id) {
-        setScheduleError('Nenhum aluno ativo');
+        setScheduleError(t('calendar.noActiveStudent', 'Nenhum aluno ativo'));
         return;
       }
 
@@ -904,9 +904,9 @@ export default function Calendario() {
         <div className="p-6">
           <div className="text-center py-12">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Calendário</h1>
-            <p className="text-gray-600 mb-6">Nenhum aluno selecionado</p>
+            <p className="text-gray-600 mb-6">{t('calendar.noStudentSelected', 'Nenhum aluno selecionado')}</p>
             <Button onClick={() => navigate('/selecionar-aluno')}>
-              Selecionar Aluno
+              {t('calendar.selectStudent', 'Selecionar Aluno')}
             </Button>
             <div className="mt-4 text-sm text-gray-500">
               Debug: activeChild = {JSON.stringify(activeChild)}, children = {children.length}
@@ -1026,12 +1026,12 @@ export default function Calendario() {
           ) : (
             <Card className="bg-gradient-to-r from-slate-50 to-slate-100 border-2 border-slate-200 shadow-lg">
               <CardContent className="p-6 text-center">
-                <p className="text-slate-600 mb-4">Nenhum aluno selecionado</p>
+                <p className="text-slate-600 mb-4">{t('calendar.noStudentSelected', 'Nenhum aluno selecionado')}</p>
                 <Button
                   onClick={() => navigate('/selecionar-aluno')}
                   className="bg-slate-900 text-white hover:bg-slate-800"
                 >
-                  Selecionar Aluno
+                  {t('calendar.selectStudent', 'Selecionar Aluno')}
                 </Button>
               </CardContent>
             </Card>
@@ -1059,7 +1059,7 @@ export default function Calendario() {
               <CardTitle className="flex items-center justify-between text-kid-green">
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Aulas de Hoje
+                  {t('calendar.availableToday')}
                 </div>
                 {todayClasses.length > 0 && (
                   <Button
@@ -1067,7 +1067,7 @@ export default function Calendario() {
                     className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-md text-sm"
                   >
                     <Play className="h-4 w-4 mr-1" />
-                    Iniciar Aula
+                    {t('calendar.startLesson')}
                   </Button>
                 )}
               </CardTitle>
@@ -1080,17 +1080,17 @@ export default function Calendario() {
                   <div className="bg-gradient-to-r from-kid-green/20 to-kid-blue/20 border border-kid-green/30 rounded-xl p-4 mb-4">
                     <div className="text-center">
                       <h3 className="font-semibold text-kid-green mb-3">
-                        🎯 Aulas Disponíveis Hoje
+                        🎯 {t('calendar.availableToday')}
                       </h3>
                       <Button
                         onClick={() => navigate('/aulaia')}
                         className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-lg px-6 py-2 text-base font-semibold w-full"
                       >
                         <Play className="h-4 w-4 mr-2" />
-                        Iniciar Aula
+                        {t('calendar.startLesson')}
                       </Button>
                       <p className="text-sm text-kid-green/70 mt-3">
-                        {todayClasses.filter(c => !c.isInterval).length} aula(s) programada(s)
+                        {todayClasses.filter(c => !c.isInterval).length} {t('calendar.lessonsPlanned')}
                       </p>
                     </div>
                   </div>
@@ -1100,7 +1100,7 @@ export default function Calendario() {
                      <div className="bg-gradient-to-r from-kid-green/10 to-kid-blue/10 border border-kid-green/20 rounded-xl p-4 mb-4">
                        <div className="text-center">
                           <h3 className="font-semibold text-kid-green mb-1">
-                             {nextEvent.isInterval ? 'Próximo Intervalo' : 'Próxima Aula'}
+                             {nextEvent.isInterval ? t('calendar.nextInterval') : t('calendar.nextLesson')}
                           </h3>
                           <p className="text-sm text-kid-green/70 mb-2">
                             {nextEvent.subject} - {nextEvent.time}
@@ -1145,7 +1145,7 @@ export default function Calendario() {
                               className="bg-primary hover:bg-primary/90"
                             >
                               <Play className="h-3 w-3 mr-1" />
-                              Iniciar Aula
+                              {t('calendar.startLesson')}
                             </Button>
                           )}
                         </div>
@@ -1163,7 +1163,7 @@ export default function Calendario() {
               ) : (
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">Hoje não há aulas programadas. Aproveite o descanso!</p>
+                  <p className="text-muted-foreground">{t('calendar.noClasses')}</p>
                 </div>
               )}
             </CardContent>
@@ -1179,7 +1179,7 @@ export default function Calendario() {
               <CardTitle className="flex items-center justify-between text-kid-green">
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Hoje
+                  {t('calendar.today')}
                 </div>
                 {todayClasses.length > 0 && (
                   <Button
@@ -1187,7 +1187,7 @@ export default function Calendario() {
                     className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-md"
                   >
                     <Play className="h-4 w-4 mr-2" />
-                    Iniciar Aula
+                    {t('calendar.startLesson')}
                   </Button>
                 )}
               </CardTitle>
@@ -1200,17 +1200,17 @@ export default function Calendario() {
                     <div className="bg-gradient-to-r from-kid-green/20 to-kid-blue/20 border border-kid-green/30 rounded-xl p-4 mb-4">
                       <div className="text-center">
                         <h3 className="font-semibold text-kid-green mb-3">
-                          🎯 Aulas Disponíveis Hoje
+                          🎯 {t('calendar.availableToday')}
                         </h3>
                         <Button
                           onClick={() => navigate('/aulaia')}
                           className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-lg px-8 py-3 text-lg font-semibold"
                         >
                           <Play className="h-5 w-5 mr-2" />
-                          Iniciar Aula
+                          {t('calendar.startLesson')}
                         </Button>
                         <p className="text-sm text-kid-green/70 mt-3">
-                          {todayClasses.filter(c => !c.isInterval).length} aula(s) programada(s)
+                          {todayClasses.filter(c => !c.isInterval).length} {t('calendar.lessonsPlanned')}
                         </p>
                       </div>
                     </div>
@@ -1220,7 +1220,7 @@ export default function Calendario() {
                       <div className="bg-gradient-to-r from-kid-green/10 to-kid-blue/10 border border-kid-green/20 rounded-xl p-4 mb-4">
                         <div className="text-center">
                            <h3 className="font-semibold text-kid-green mb-1">
-                             {nextEvent.isInterval ? 'Próximo Intervalo' : 'Próxima Aula'}
+                             {nextEvent.isInterval ? t('calendar.nextInterval') : t('calendar.nextLesson')}
                            </h3>
                            <p className="text-sm text-kid-green/70 mb-2">
                              {nextEvent.subject || nextEvent.title} - {nextEvent.time}
@@ -1291,7 +1291,7 @@ export default function Calendario() {
                                  className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-md"
                                >
                                 <Play className="h-3 w-3 mr-1" />
-                                Iniciar Aula
+                                {t('calendar.startLesson')}
                               </Button>
                             )}
                             </div>
@@ -1310,7 +1310,7 @@ export default function Calendario() {
                 ) : (
                    <div className="text-center py-8">
                      <Calendar className="h-12 w-12 text-kid-green/50 mx-auto mb-3" />
-                     <p className="text-kid-green/70">Hoje não há aulas programadas. Aproveite o descanso! 🌈</p>
+                     <p className="text-kid-green/70">{t('calendar.noClasses')} 🌈</p>
                    </div>
                 )}
               </CardContent>
@@ -1324,9 +1324,9 @@ export default function Calendario() {
                 <CardTitle className="flex items-center justify-between text-kid-green">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-5 w-5" />
-                    📅 Agenda Semanal
+                    📅 {t('calendar.weeklySchedule')}
                     <Badge variant="outline" className="text-xs bg-kid-yellow/20 text-kid-orange border-kid-yellow/30">
-                      Arraste dias para reorganizar
+                      {t('calendar.dragInstructions')}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1357,22 +1357,22 @@ export default function Calendario() {
                   </div>
                 </CardTitle>
                 <p className="text-sm text-kid-green/70">
-                  Arraste um dia com aulas para outro dia para mover todas as aulas de uma vez 🎪
+                  {t('calendar.dragInstruction')} 🎪
                 </p>
               </CardHeader>
             <CardContent>
               <div className="grid grid-cols-7 gap-4">
                 <div className="col-span-7 flex items-center justify-between mb-2">
                   <div className="text-sm text-muted-foreground">
-                    {t('calendar.tipDrag', 'Ative edição para arrastar dias e reorganizar aulas')}
+                    {t('calendar.dragInstruction')}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant={editMode ? 'default' : 'outline'} size="sm" onClick={toggleEditMode}>
-                      {editMode ? t('calendar.editingOn', 'Edição ativa') : t('calendar.editingOff', 'Ativar edição')}
+                      {editMode ? t('calendar.editMode') : t('calendar.activateEdit')}
                     </Button>
                     {editMode && (
                       <div className="text-xs text-muted-foreground">
-                        Arraste aulas entre os dias
+                        {t('calendar.dragInstructions')}
                       </div>
                     )}
                   </div>
@@ -1488,9 +1488,9 @@ export default function Calendario() {
                         ) : (
                           <div className="text-center py-4 text-muted-foreground text-xs border-2 border-dashed border-muted/50 rounded-lg">
                             {isDraggedOver && editMode ? (
-                              'Solte as aulas aqui'
+                              t('calendar.dropHere')
                             ) : (
-                              'Sem aulas'
+                              t('calendar.noEvents')
                             )}
                           </div>
                         )}
