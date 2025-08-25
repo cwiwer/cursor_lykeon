@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, MoreVertical } from "lucide-react";
+import { Plus, MoreVertical, Brain } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ManageChildModal } from "@/components/children/ManageChildModal";
 
@@ -163,6 +163,54 @@ export default function PaisDashboard() {
               </Card>
             ))
           )}
+        </section>
+
+        {/* Seção de Atividades */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">🎯 Atividades</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link to="/quizzes">
+              <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+                    <Brain className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-blue-800 mb-2">Quizzes</h3>
+                  <p className="text-sm text-blue-600">
+                    Teste os conhecimentos dos seus filhos
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+            
+            <Link to="/calendario">
+              <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-green-100 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-green-500 flex items-center justify-center">
+                    📅
+                  </div>
+                  <h3 className="text-lg font-bold text-green-800 mb-2">Calendário</h3>
+                  <p className="text-sm text-green-600">
+                    Acompanhe a agenda escolar
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+            
+            <Link to="/relatorios">
+              <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-purple-500 flex items-center justify-center">
+                    📊
+                  </div>
+                  <h3 className="text-lg font-bold text-purple-800 mb-2">Relatórios</h3>
+                  <p className="text-sm text-purple-600">
+                    Visualize o progresso acadêmico
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         </section>
 
         {/* TODO: Integrações futuras */}

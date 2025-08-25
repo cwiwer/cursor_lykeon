@@ -21,6 +21,9 @@ import {
   getTimePosition 
 } from '@/utils/date';
 import { DayTimeline } from '@/components/calendar/DayTimeline';
+import { MonthMini } from '@/components/calendar/MonthMini';
+import { getWeekSchedule, getDaySchedule } from '@/services/scheduleGenerator';
+import { WeekSchedule, DaySchedule } from '@/types/schedule';
 
 interface ClassEvent {
   id: string;
@@ -69,110 +72,7 @@ const getSubjectIcon = (subject: string) => {
 
 // Função removida - agora usamos useNow hook
 
-// Today's schedule with 4 subjects and intervals
-const todaySchedule = [
-  {
-    id: '1',
-    subject: 'Matemática',
-    title: 'Frações Decimais',
-    time: '14:00',
-    startTime: '14:00',
-    endTime: '14:25',
-    duration: 25,
-    teacher: 'Prof. Ana',
-    status: 'completed' as const,
-    icon: '📐',
-    canStart: false,
-    lessonId: 'math-001'
-  },
-  {
-    id: 'interval-1',
-    subject: 'Intervalo',
-    title: 'Pausa',
-    time: '14:25',
-    startTime: '14:25',
-    endTime: '14:35',
-    duration: 10,
-    teacher: '',
-    status: 'completed' as const,
-    icon: '☕',
-    canStart: false,
-    lessonId: '',
-    isInterval: true
-  },
-  {
-    id: '2',
-    subject: 'Português',
-    title: 'Verbos Irregulares',
-    time: '14:35',
-    startTime: '14:35',
-    endTime: '14:57',
-    duration: 22,
-    teacher: 'Prof. Carlos',
-    status: 'completed' as const,
-    icon: '📖',
-    canStart: false,
-    lessonId: 'port-001'
-  },
-  {
-    id: 'interval-2',
-    subject: 'Intervalo',
-    title: 'Recreio',
-    time: '14:57',
-    startTime: '14:57',
-    endTime: '15:27',
-    duration: 30,
-    teacher: '',
-    status: 'completed' as const,
-    icon: '🎮',
-    canStart: false,
-    lessonId: '',
-    isInterval: true
-  },
-  {
-    id: '3',
-    subject: 'Ciências',
-    title: 'Sistema Solar',
-    time: '15:27',
-    startTime: '15:27',
-    endTime: '15:55',
-    duration: 28,
-    teacher: 'Prof. Maria',
-    status: 'time_to_start' as const,
-    icon: '🌌',
-    canStart: true,
-    lessonId: 'sci-001'
-  },
-  {
-    id: 'interval-3',
-    subject: 'Intervalo',
-    title: 'Pausa',
-    time: '15:55',
-    startTime: '15:55',
-    endTime: '16:05',
-    duration: 10,
-    teacher: '',
-    status: 'upcoming' as const,
-    icon: '☕',
-    canStart: false,
-    lessonId: '',
-    isInterval: true
-  },
-  {
-    id: '4',
-    subject: 'História',
-    title: 'Descobrimento do Brasil',
-    time: '16:05',
-    startTime: '16:05',
-    endTime: '16:28',
-    duration: 23,
-    teacher: 'Prof. João',
-    status: 'upcoming' as const,
-    icon: '🏛️',
-    canStart: false,
-    lessonId: 'hist-001'
-  }
-];
+// REMOVIDO: mock de "Hoje" – passa a usar dados reais da semana
 
 // Helper to get time difference in minutes
 const getTimeDifference = (targetTime: string, now: Date) => {
@@ -191,6 +91,53 @@ const formatCountdown = (minutes: number) => {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   return `${hours}h ${mins}min`;
+};
+
+// Helper para mapear dias da semana para chaves dos dados mockados
+const getDayKey = (dayShort: string, locale: string): string => {
+  // Mapear abreviações para chaves em português
+  const dayMapping: Record<string, string> = {
+    'Dom': 'domingo',
+    'Seg': 'segunda', 
+    'Ter': 'terça',
+    'Qua': 'quarta',
+    'Qui': 'quinta',
+    'Sex': 'sexta',
+    'Sáb': 'sábado',
+    // Fallbacks para inglês
+    'Sun': 'domingo',
+    'Mon': 'segunda',
+    'Tue': 'terça', 
+    'Wed': 'quarta',
+    'Thu': 'quinta',
+    'Fri': 'sexta',
+    'Sat': 'sábado',
+    // Fallbacks para francês
+    'dim': 'domingo',
+    'lun': 'segunda',
+    'mar': 'terça',
+    'mer': 'quarta', 
+    'jeu': 'quinta',
+    'ven': 'sexta',
+    'sam': 'sábado'
+  };
+  
+  return dayMapping[dayShort] || 'domingo';
+};
+
+// Helper para formatar tempo em minutos para HH:MM
+const formatTime = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+};
+
+// Helpers locais para ISO (local) e hora por locale
+const toISODateLocal = (d: Date): string => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
 };
 
 const mockClasses: Record<string, ClassEvent[]> = {
@@ -468,15 +415,7 @@ const mockClasses: Record<string, ClassEvent[]> = {
   'domingo': []
 };
 
-const weekDays = [
-  { key: 'segunda', label: 'Segunda', date: '22/01' },
-  { key: 'terça', label: 'Terça', date: '23/01' },
-  { key: 'quarta', label: 'Quarta', date: '24/01' },
-  { key: 'quinta', label: 'Quinta', date: '25/01' },
-  { key: 'sexta', label: 'Sexta', date: '26/01' },
-  { key: 'sabado', label: 'Sábado', date: '27/01' },
-  { key: 'domingo', label: 'Domingo', date: '28/01' }
-];
+// weekDays agora é definido dinamicamente usando getWeekDays(locale, 0)
 
 // Subject mapping for SubjectsRow
 const SUBJECTS = {
@@ -507,7 +446,11 @@ function SubjectsRow({ schedule }: { schedule: ClassEvent[] }) {
   const counts = schedule
     .filter(event => !event.isInterval)
     .reduce((acc, event) => {
-      acc[event.subject] = (acc[event.subject] || 0) + 1;
+      // Usar subject ou title dependendo da fonte dos dados
+      const subjectName = event.subject || event.title;
+      if (subjectName) {
+        acc[subjectName] = (acc[subjectName] || 0) + 1;
+      }
       return acc;
     }, {} as Record<string, number>);
 
@@ -526,60 +469,35 @@ function SubjectsRow({ schedule }: { schedule: ClassEvent[] }) {
     <div className="bg-white/90 backdrop-blur-sm border border-kid-green/20 rounded-xl p-4 mb-4 shadow-sm">
       <div className="font-bold text-kid-green mb-3">Matérias de Hoje</div>
       <div className="flex flex-wrap gap-2">
-        {subjectsWithClasses.map((key) => (
-          <span
-            key={key}
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${COLORS[key]} font-semibold whitespace-nowrap`}
-            aria-label={`${SUBJECTS[key].name} — ${counts[key] ?? 0} bloco(s) hoje`}
-            title={`${SUBJECTS[key].name} — ${counts[key] ?? 0} bloco(s) hoje`}
-          >
-            <span className="text-base leading-none">{SUBJECTS[key].icon}</span>
-            {SUBJECTS[key].name}
-            <span className="text-xs font-bold opacity-80">· {counts[key] ?? 0}</span>
-          </span>
-        ))}
+        {subjectsWithClasses.map((key) => {
+          const subject = SUBJECTS[key];
+          const fallbackColor = 'bg-gray-100 text-gray-700 border-gray-300';
+          
+          return (
+            <span
+              key={key}
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${subject ? COLORS[key] : fallbackColor} font-semibold whitespace-nowrap`}
+              aria-label={`${subject?.name || key} — ${counts[key] ?? 0} bloco(s) hoje`}
+              title={`${subject?.name || key} — ${counts[key] ?? 0} bloco(s) hoje`}
+            >
+              <span className="text-base leading-none">{subject?.icon || '📚'}</span>
+              {subject?.name || key}
+              <span className="text-xs font-bold opacity-80">· {counts[key] ?? 0}</span>
+            </span>
+          );
+        })}
       </div>
       <div className="text-xs text-slate-500 mt-1">A sequência é fixa — o aluno segue a trilha do dia sem reordenar.</div>
     </div>
   );
 }
 
-// MonthlyCalendar Component
-function MonthlyCalendar() {
-  // Versão simples estática para o MVP; futuramente gerar via Date()
-  const head = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
-  return (
-    <div className="mt-6 bg-white/90 backdrop-blur-sm border border-kid-green/20 rounded-xl p-4 shadow-sm">
-      <div className="font-bold text-kid-green mb-3 flex items-center gap-2">
-        <Calendar className="h-5 w-5" />
-        📅 Calendário do Mês
-      </div>
-      <div className="grid grid-cols-7 text-[11px] font-semibold text-slate-500">
-        {head.map((d) => (
-          <div key={d} className="p-2 text-center">{d}</div>
-        ))}
-      </div>
-      <div className="grid grid-cols-7 gap-[1px] bg-slate-200 rounded-md overflow-hidden text-xs">
-        {Array.from({ length: 35 }).map((_, i) => (
-          <div key={i} className="min-h-[68px] bg-white p-2">
-            <div className="font-bold text-slate-700">{i % 30 === 0 ? "" : (i % 30) + 1}</div>
-            {i % 5 === 0 && (
-              <span className="inline-block mt-1 px-2 py-0.5 rounded bg-kid-blue/20 text-kid-blue border border-kid-blue/30 text-[10px]">Quiz</span>
-            )}
-            {i % 7 === 0 && (
-              <span className="inline-block mt-1 ml-1 px-2 py-0.5 rounded bg-kid-orange/20 text-kid-orange border border-kid-orange/30 text-[10px]">Leitura</span>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+
 
 export default function Calendario() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { activeChild } = useStudent();
+  const { t, i18n } = useTranslation();
+  const { activeChild, children } = useStudent();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState('quinta');
   const [showMedals, setShowMedals] = useState(false);
@@ -589,27 +507,178 @@ export default function Calendario() {
   const serverOffset = useServerTimeOffset();
   const adjustedNow = new Date(now.getTime() + serverOffset);
   
-  // Estado da semana
-  const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(adjustedNow));
+  // Estado da semana (SEMPRE começa no domingo)
+  const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(adjustedNow, 0));
   const [weekClasses, setWeekClasses] = useState(mockClasses);
   const [draggedDay, setDraggedDay] = useState<string | null>(null);
   const [dropTargetDay, setDropTargetDay] = useState<string | null>(null);
+
+  // Estado da grade semanal gerada
+  const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editableWeek, setEditableWeek] = useState<Record<string, any[]>>({});
+  const [originalWeekData, setOriginalWeekData] = useState<Record<string, any[]>>({});
+  const [dragSourceDateISO, setDragSourceDateISO] = useState<string | null>(null);
+  const [dropTargetDateISO, setDropTargetDateISO] = useState<string | null>(null);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+
+  // Função para ativar/desativar modo de edição
+  const toggleEditMode = () => {
+    if (!editMode) {
+      // Ativando modo de edição - copiar dados atuais para editableWeek
+      const newEditableWeek: Record<string, any[]> = {};
+      const newOriginalWeekData: Record<string, any[]> = {};
+      
+      console.log('Ativando modo de edição, weekSchedule:', !!weekSchedule);
+      
+      if (weekSchedule) {
+        // Usar dados do weekSchedule
+        weekSchedule.days.forEach(day => {
+          const classes = day.slots.filter(s => s.type === 'class');
+          newEditableWeek[day.dateISO] = classes;
+          newOriginalWeekData[day.dateISO] = [...classes]; // Cópia profunda
+          console.log(`Dia ${day.dateISO}: ${classes.length} aulas`);
+        });
+      } else {
+        // Usar dados mockados
+        weekDays.forEach((day, index) => {
+          const dayDate = addDays(weekStart, index);
+          const dateISO = toISODateLocal(dayDate);
+          const dayKey = getDayKey(day.short, locale);
+          const classes = weekClasses[dayKey] || [];
+          newEditableWeek[dateISO] = classes;
+          newOriginalWeekData[dateISO] = [...classes]; // Cópia profunda
+          console.log(`Dia ${dateISO} (${dayKey}): ${classes.length} aulas`);
+        });
+      }
+      
+      console.log('EditableWeek criado:', newEditableWeek);
+      setEditableWeek(newEditableWeek);
+      setOriginalWeekData(newOriginalWeekData);
+    } else {
+      // Desativando modo de edição - perguntar se quer aplicar mudanças
+      const hasChanges = Object.keys(editableWeek).some(dateISO => {
+        const current = editableWeek[dateISO] || [];
+        const original = originalWeekData[dateISO] || [];
+        return current.length !== original.length || 
+               !current.every((item, index) => item.id === original[index]?.id);
+      });
+      
+      if (hasChanges) {
+        // Mostrar confirmação para aplicar mudanças
+        if (window.confirm('Deseja aplicar as mudanças feitas na edição?')) {
+          // Aplicar mudanças permanentemente
+          if (weekSchedule) {
+            // Atualizar weekSchedule com as mudanças
+            const updatedWeekSchedule = { ...weekSchedule };
+            updatedWeekSchedule.days = updatedWeekSchedule.days.map(day => {
+              const editedClasses = editableWeek[day.dateISO] || [];
+              return {
+                ...day,
+                slots: editedClasses.map((cls, index) => ({
+                  ...cls,
+                  id: cls.id || `edited-${day.dateISO}-${index}`,
+                  type: 'class' as const,
+                  subjectId: cls.subjectId || 'portugues',
+                  title: cls.title || cls.subject || 'Aula Editada',
+                  startMinOfDay: (8 * 60) + (index * 55), // 8:00, 8:55, 9:50
+                  durationMin: index === 2 ? 30 : 45
+                }))
+              };
+            });
+            setWeekSchedule(updatedWeekSchedule);
+          } else {
+            // Atualizar weekClasses com as mudanças
+            const updatedWeekClasses = { ...weekClasses };
+            weekDays.forEach((day, index) => {
+              const dayDate = addDays(weekStart, index);
+              const dateISO = toISODateLocal(dayDate);
+              const dayKey = getDayKey(day.short, locale);
+              const editedClasses = editableWeek[dateISO] || [];
+              
+              if (editedClasses.length > 0) {
+                updatedWeekClasses[dayKey] = editedClasses.map((cls, idx) => ({
+                  ...cls,
+                  id: cls.id || `edited-${dayKey}-${idx}`,
+                  time: `${8 + Math.floor(idx * 55 / 60)}:${(idx * 55) % 60 === 0 ? '00' : (idx * 55) % 60}`,
+                  endTime: `${8 + Math.floor((idx * 55 + (idx === 2 ? 30 : 45)) / 60)}:${((idx * 55 + (idx === 2 ? 30 : 45)) % 60 === 0 ? '00' : (idx * 55 + (idx === 2 ? 30 : 45)) % 60)}`,
+                  duration: idx === 2 ? 30 : 45
+                }));
+              }
+            });
+            setWeekClasses(updatedWeekClasses);
+          }
+          console.log('Mudanças aplicadas permanentemente');
+        } else {
+          // Descartar mudanças - restaurar dados originais
+          setEditableWeek(originalWeekData);
+          console.log('Mudanças descartadas');
+        }
+      }
+    }
+    setEditMode(!editMode);
+  };
   
   // Configurações de locale e timezone
-  const locale = typeof t('language') === 'string' ? t('language') : navigator.language;
+  const locale = i18n.language || navigator.language;
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const use12Hour = prefersHour12(locale);
   
-  // Dias da semana
-  const weekDays = getWeekDays(locale, 1); // Segunda = 1
+  // Dias da semana localizados (SEMPRE domingo primeiro na ordem visual)
+  const weekDays = getWeekDays(locale, 0);
 
+  // Simples loading state
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => setIsLoading(false), 1000);
-    
-    // Sincronizar semana com o tempo atual
-    setWeekStart(startOfWeek(adjustedNow));
-  }, [adjustedNow]);
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Debug simples
+  useEffect(() => {
+    console.log('Calendario: activeChild =', !!activeChild);
+  }, [activeChild]);
+
+  // Gerar grade semanal quando a semana mudar
+  useEffect(() => {
+    console.log('useEffect [weekStart, activeChild?.id] executado:', { weekStart, activeChildId: activeChild?.id });
+    refreshWeekSchedule();
+  }, [weekStart, activeChild?.id]);
+
+  console.log('Calendario: Componente carregado, activeChild:', !!activeChild);
+
+  // Função para gerar/atualizar a grade semanal
+  const refreshWeekSchedule = () => {
+    try {
+      setScheduleError(null);
+
+      if (!activeChild?.id) {
+        setScheduleError('Nenhum aluno ativo');
+        return;
+      }
+
+      const weekStartISO = toISODateLocal(weekStart);
+
+      console.log('Gerando grade para:', {
+        childId: activeChild.id,
+        weekStartISO,
+        locale: locale.split('-')[0]
+      });
+
+      // Gerar grade
+      const schedule = getWeekSchedule({
+        childId: activeChild.id,
+        weekStartISO,
+        locale: locale.split('-')[0] // pt-BR -> pt
+      });
+
+      console.log('Grade gerada:', schedule);
+      setWeekSchedule(schedule);
+    } catch (error) {
+      console.error('Erro ao gerar grade semanal:', error);
+      setScheduleError(error instanceof Error ? error.message : 'Erro desconhecido');
+      setWeekSchedule(null);
+    }
+  };
 
   // Funções de navegação da semana
   const goPrevWeek = () => {
@@ -621,60 +690,29 @@ export default function Calendario() {
   };
   
   const goToCurrentWeek = () => {
-    setWeekStart(startOfWeek(adjustedNow));
-  };
-  
-  // Drag and drop handlers
-  const handleDragStart = (e: React.DragEvent, dayKey: string) => {
-    setDraggedDay(dayKey);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', dayKey);
+    setWeekStart(startOfWeek(adjustedNow, 0));
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+  // Função para selecionar data no calendário mensal
+  const handleSelectDate = (date: Date) => {
+    // Atualizar a semana ativa para a semana da data selecionada (SEMPRE domingo)
+    setWeekStart(startOfWeek(date, 0));
   };
 
-  const handleDragEnter = (e: React.DragEvent, dayKey: string) => {
-    e.preventDefault();
-    setDropTargetDay(dayKey);
-  };
+  // Helper para mapear dias da semana para chaves dos dados mockados
+  // getDayKey já está definido acima
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    // Only clear if we're leaving the container, not just moving to a child
-    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-      setDropTargetDay(null);
-    }
-  };
+  // Helper para formatar tempo em minutos para HH:MM
+  // formatTime já está definido acima
 
-  const handleDrop = (e: React.DragEvent, targetDayKey: string) => {
-    e.preventDefault();
-    const sourceDayKey = e.dataTransfer.getData('text/plain');
-    
-    if (sourceDayKey && sourceDayKey !== targetDayKey) {
-      setWeekClasses(prev => {
-        const newClasses = { ...prev };
-        const sourceClasses = newClasses[sourceDayKey] || [];
-        const targetClasses = newClasses[targetDayKey] || [];
-        
-        // Move source classes to target day
-        newClasses[targetDayKey] = [...targetClasses, ...sourceClasses];
-        // Clear source day
-        newClasses[sourceDayKey] = [];
-        
-        return newClasses;
-      });
-    }
-    
-    setDraggedDay(null);
-    setDropTargetDay(null);
-  };
+  // Helpers locais para ISO (local) e hora por locale
+  // toISODateLocal já está definido acima
 
-  const handleDragEnd = () => {
-    setDraggedDay(null);
-    setDropTargetDay(null);
-  };
+  // Helper to get time difference in minutes
+  // getTimeDifference já está definido acima
+
+  // Helper to format countdown
+  // formatCountdown já está definido acima
 
   const getStatusColor = (status: ClassEvent['status']) => {
     switch (status) {
@@ -702,18 +740,120 @@ export default function Calendario() {
     navigate(`/aulaia/${lessonId}`);
   };
 
-  const todayClasses = weekClasses['quinta'] || [];
+  // Drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, dateISO: string) => {
+    if (!editMode) return;
+    setDragSourceDateISO(dateISO);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dateISO);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!editMode) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDragEnter = (e: React.DragEvent, dateISO: string) => {
+    if (!editMode) return;
+    e.preventDefault();
+    setDropTargetDateISO(dateISO);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (!editMode) return;
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setDropTargetDateISO(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetDateISO: string) => {
+    if (!editMode) return;
+    e.preventDefault();
+    const sourceDateISO = e.dataTransfer.getData('text/plain');
+    if (sourceDateISO && sourceDateISO !== targetDateISO) {
+      setEditableWeek(prev => {
+        const next = { ...prev };
+        const source = next[sourceDateISO] || [];
+        const target = next[targetDateISO] || [];
+        next[targetDateISO] = [...target, ...source];
+        next[sourceDateISO] = [];
+        return next;
+      });
+    }
+    setDragSourceDateISO(null);
+    setDropTargetDateISO(null);
+  };
+
+  const handleDragEnd = () => {
+    if (!editMode) return;
+    setDragSourceDateISO(null);
+    setDropTargetDateISO(null);
+  };
+
+  // Get today's day key based on current date
+  const todayDayIndex = adjustedNow.getDay();
+  const todayDayShort = getWeekDays(locale, 0)[todayDayIndex].short;
+  const todayDayKey = getDayKey(todayDayShort, locale);
+  const todayISO = toISODateLocal(adjustedNow);
+  
+  // Escolher fonte de dados para "hoje" baseado no estado atual
+  let todayClasses: any[] = [];
+  
+  if (editMode && editableWeek[todayISO]) {
+    // Modo de edição ativo - usar dados editáveis
+    todayClasses = editableWeek[todayISO] || [];
+    console.log('Usando editableWeek para hoje:', todayClasses.length, 'aulas');
+  } else if (weekSchedule) {
+    // Usar dados do weekSchedule gerado
+    const todaySchedule = weekSchedule.days.find(d => d.dateISO === todayISO);
+    if (todaySchedule) {
+      todayClasses = todaySchedule.slots.filter(s => s.type === 'class');
+      console.log('Usando weekSchedule para hoje:', todayClasses.length, 'aulas');
+    }
+  } else {
+    // Fallback para dados mockados
+    todayClasses = weekClasses[todayDayKey] || [];
+    console.log('Usando weekClasses para hoje:', todayClasses.length, 'aulas');
+  }
+  
+  // Debug logs
+  console.log('Debug today:', {
+    todayDayIndex,
+    todayDayShort,
+    todayDayKey,
+    todayISO,
+    todayClassesLength: todayClasses.length,
+    editMode,
+    hasWeekSchedule: !!weekSchedule,
+    availableKeys: Object.keys(weekClasses)
+  });
   
   // Get next class or interval
   const getNextEvent = () => {
     const nowMinutes = adjustedNow.getHours() * 60 + adjustedNow.getMinutes();
     
     for (const event of todayClasses) {
-      const [hours, minutes] = event.time.split(':').map(Number);
+      let eventTime: string | undefined;
+      
+      // Verificar se é um evento do weekSchedule (tem startMinOfDay) ou dados mockados (tem time)
+      if ('startMinOfDay' in event) {
+        // Evento do weekSchedule - converter startMinOfDay para HH:MM
+        const hours = Math.floor(event.startMinOfDay / 60);
+        const minutes = event.startMinOfDay % 60;
+        eventTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      } else {
+        // Evento dos dados mockados - usar time diretamente
+        eventTime = event.time;
+      }
+      
+      if (!eventTime) continue;
+      
+      const [hours, minutes] = eventTime.split(':').map(Number);
       const eventMinutes = hours * 60 + minutes;
       
       if (eventMinutes > nowMinutes) {
-        return event;
+        return { ...event, time: eventTime };
       }
     }
     return null;
@@ -722,6 +862,62 @@ export default function Calendario() {
   const nextEvent = getNextEvent();
   const timeToNext = nextEvent ? getTimeDifference(nextEvent.time, adjustedNow) : 0;
 
+  // Fallback se não houver aluno ativo
+  if (!activeChild) {
+    console.log('Calendario: Renderizando fallback - nenhum aluno ativo');
+    
+    // Se ainda está carregando, mostrar loading
+    if (isLoading) {
+      return (
+        <AppLayout>
+          <div className="p-6">
+            <div className="text-center py-12">
+              <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">Carregando...</h1>
+              <p className="text-gray-600 mb-6">Buscando informações do aluno</p>
+            </div>
+          </div>
+        </AppLayout>
+      );
+    }
+    
+    // Se não está carregando e não há crianças, redirecionar para selecionar aluno
+    if (children.length === 0) {
+      console.log('Calendario: Nenhuma criança encontrada, redirecionando para selecionar-aluno');
+      // Usar setTimeout para evitar erro de renderização durante navegação
+      setTimeout(() => navigate('/selecionar-aluno'), 0);
+      return (
+        <AppLayout>
+          <div className="p-6">
+            <div className="text-center py-12">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">Redirecionando...</h1>
+              <p className="text-gray-600 mb-6">Nenhuma criança cadastrada</p>
+            </div>
+          </div>
+        </AppLayout>
+      );
+    }
+    
+    // Se há crianças mas nenhuma está ativa, mostrar opção de seleção
+    return (
+      <AppLayout>
+        <div className="p-6">
+          <div className="text-center py-12">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Calendário</h1>
+            <p className="text-gray-600 mb-6">Nenhum aluno selecionado</p>
+            <Button onClick={() => navigate('/selecionar-aluno')}>
+              Selecionar Aluno
+            </Button>
+            <div className="mt-4 text-sm text-gray-500">
+              Debug: activeChild = {JSON.stringify(activeChild)}, children = {children.length}
+            </div>
+            </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+    // Verificar se está carregando
   if (isLoading) {
     return (
       <AppLayout>
@@ -737,20 +933,22 @@ export default function Calendario() {
               <Skeleton className="h-10 w-10 rounded-full" />
             </div>
           </div>
-          
+
           {/* Week Skeleton */}
           <div className="grid grid-cols-7 gap-2">
             {Array.from({ length: 7 }).map((_, i) => (
               <Skeleton key={i} className="h-24" />
             ))}
           </div>
-          
+
           {/* Timeline Skeleton */}
           <Skeleton className="h-64" />
         </div>
       </AppLayout>
     );
   }
+
+  console.log('Calendario: Renderizando conteúdo principal');
 
   return (
     <AppLayout>
@@ -774,16 +972,16 @@ export default function Calendario() {
             <div className="flex items-center gap-4">
               <div className="text-right bg-gradient-to-br from-kid-green/20 to-kid-blue/20 p-4 rounded-xl border border-kid-green/30">
                 <p className="text-sm text-kid-green/70 font-medium">
-                  {t('calendar.todayLabel')}, {formatDate(adjustedNow, locale, timeZone, { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {t('calendar.todayLabel')}, {formatDate(adjustedNow, locale, timeZone, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   })}
                 </p>
                 <p className="text-2xl font-bold text-kid-green">
-                  {formatDate(adjustedNow, locale, timeZone, { 
-                    hour: 'numeric', 
+                  {formatDate(adjustedNow, locale, timeZone, {
+                    hour: 'numeric',
                     minute: '2-digit',
                     hour12: use12Hour
                   })}
@@ -829,7 +1027,7 @@ export default function Calendario() {
             <Card className="bg-gradient-to-r from-slate-50 to-slate-100 border-2 border-slate-200 shadow-lg">
               <CardContent className="p-6 text-center">
                 <p className="text-slate-600 mb-4">Nenhum aluno selecionado</p>
-                <Button 
+                <Button
                   onClick={() => navigate('/selecionar-aluno')}
                   className="bg-slate-900 text-white hover:bg-slate-800"
                 >
@@ -841,19 +1039,62 @@ export default function Calendario() {
         </div>
 
         <div className="px-6 space-y-6">
+        {/* Debug: Mostrar erros de schedule se houver */}
+        {scheduleError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-red-800">
+              <span className="text-sm font-medium">Erro na grade semanal:</span>
+              <span className="text-sm">{scheduleError}</span>
+            </div>
+            <div className="text-xs text-red-600 mt-1">
+              Usando dados mockados como fallback
+            </div>
+          </div>
+        )}
+
         {/* Today's Timeline - Mobile First */}
         <div className="block lg:hidden">
           <Card className="bg-white/90 backdrop-blur-sm border-2 border-kid-green/20 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-kid-green">
-                <Clock className="h-5 w-5" />
-                Aulas de Hoje
+              <CardTitle className="flex items-center justify-between text-kid-green">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Aulas de Hoje
+                </div>
+                {todayClasses.length > 0 && (
+                  <Button
+                    onClick={() => navigate('/aulaia')}
+                    className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-md text-sm"
+                  >
+                    <Play className="h-4 w-4 mr-1" />
+                    Iniciar Aula
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <SubjectsRow schedule={todaySchedule} />
+              <SubjectsRow schedule={todayClasses} />
               {todayClasses.length > 0 ? (
                 <div className="space-y-3">
+                  {/* Botão principal para iniciar aula */}
+                  <div className="bg-gradient-to-r from-kid-green/20 to-kid-blue/20 border border-kid-green/30 rounded-xl p-4 mb-4">
+                    <div className="text-center">
+                      <h3 className="font-semibold text-kid-green mb-3">
+                        🎯 Aulas Disponíveis Hoje
+                      </h3>
+                      <Button
+                        onClick={() => navigate('/aulaia')}
+                        className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-lg px-6 py-2 text-base font-semibold w-full"
+                      >
+                        <Play className="h-4 w-4 mr-2" />
+                        Iniciar Aula
+                      </Button>
+                      <p className="text-sm text-kid-green/70 mt-3">
+                        {todayClasses.filter(c => !c.isInterval).length} aula(s) programada(s)
+                      </p>
+                    </div>
+                  </div>
+
                   {/* Countdown Card */}
                   {nextEvent && (
                      <div className="bg-gradient-to-r from-kid-green/10 to-kid-blue/10 border border-kid-green/20 rounded-xl p-4 mb-4">
@@ -870,15 +1111,15 @@ export default function Calendario() {
                       </div>
                     </div>
                   )}
-                  
+
                   {todayClasses.map((classEvent, index) => (
                     <div key={classEvent.id}>
                       <div className={`flex items-center gap-4 p-4 border rounded-xl ${
                         classEvent.isInterval ? 'bg-muted/50' : 'bg-card'
                       }`}>
                         <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                          classEvent.isInterval 
-                            ? 'bg-muted text-muted-foreground' 
+                          classEvent.isInterval
+                            ? 'bg-muted text-muted-foreground'
                             : 'bg-primary/10 text-primary'
                         }`}>
                           <span className="text-lg">{classEvent.icon}</span>
@@ -897,14 +1138,14 @@ export default function Calendario() {
                               {getStatusText(classEvent.status)}
                             </Badge>
                           )}
-                          {classEvent.canStart && !classEvent.isInterval && (
+                          {!classEvent.isInterval && (
                             <Button
                               size="sm"
-                              onClick={() => handleStartLesson(classEvent.lessonId)}
+                              onClick={() => navigate('/aulaia')}
                               className="bg-primary hover:bg-primary/90"
                             >
                               <Play className="h-3 w-3 mr-1" />
-                              Começar
+                              Iniciar Aula
                             </Button>
                           )}
                         </div>
@@ -934,16 +1175,46 @@ export default function Calendario() {
           {/* Today's Timeline */}
           <div className="lg:col-span-1 order-first lg:order-none">
             <Card className="bg-white/90 backdrop-blur-sm border-2 border-kid-green/20 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-kid-green">
+                          <CardHeader>
+              <CardTitle className="flex items-center justify-between text-kid-green">
+                <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
                   Hoje
-                </CardTitle>
-              </CardHeader>
+                </div>
+                {todayClasses.length > 0 && (
+                  <Button
+                    onClick={() => navigate('/aulaia')}
+                    className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-md"
+                  >
+                    <Play className="h-4 w-4 mr-2" />
+                    Iniciar Aula
+                  </Button>
+                )}
+              </CardTitle>
+            </CardHeader>
               <CardContent>
-                <SubjectsRow schedule={todaySchedule} />
+                <SubjectsRow schedule={todayClasses} />
                 {todayClasses.length > 0 ? (
                   <div className="space-y-3">
+                    {/* Botão principal para iniciar aula */}
+                    <div className="bg-gradient-to-r from-kid-green/20 to-kid-blue/20 border border-kid-green/30 rounded-xl p-4 mb-4">
+                      <div className="text-center">
+                        <h3 className="font-semibold text-kid-green mb-3">
+                          🎯 Aulas Disponíveis Hoje
+                        </h3>
+                        <Button
+                          onClick={() => navigate('/aulaia')}
+                          className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-lg px-8 py-3 text-lg font-semibold"
+                        >
+                          <Play className="h-5 w-5 mr-2" />
+                          Iniciar Aula
+                        </Button>
+                        <p className="text-sm text-kid-green/70 mt-3">
+                          {todayClasses.filter(c => !c.isInterval).length} aula(s) programada(s)
+                        </p>
+                      </div>
+                    </div>
+
                     {/* Countdown Card */}
                     {nextEvent && (
                       <div className="bg-gradient-to-r from-kid-green/10 to-kid-blue/10 border border-kid-green/20 rounded-xl p-4 mb-4">
@@ -952,7 +1223,7 @@ export default function Calendario() {
                              {nextEvent.isInterval ? 'Próximo Intervalo' : 'Próxima Aula'}
                            </h3>
                            <p className="text-sm text-kid-green/70 mb-2">
-                             {nextEvent.subject} - {nextEvent.time}
+                             {nextEvent.subject || nextEvent.title} - {nextEvent.time}
                            </p>
                           <div className="text-2xl font-bold text-kid-green">
                             {formatCountdown(timeToNext)}
@@ -960,27 +1231,51 @@ export default function Calendario() {
                         </div>
                       </div>
                     )}
-                    
-                    {todaySchedule.map((classEvent, index) => {
-                      const timeDiff = getTimeDifference(classEvent.startTime, adjustedNow);
+
+                    {todayClasses.map((classEvent, index) => {
+                      // Calcular tempo baseado no tipo de evento
+                      let eventTime: string;
+                      let eventEndTime: string;
+                      let eventDuration: number;
+                      
+                      if ('startMinOfDay' in classEvent) {
+                        // Evento do weekSchedule
+                        const startH = Math.floor(classEvent.startMinOfDay / 60);
+                        const startM = classEvent.startMinOfDay % 60;
+                        eventTime = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+                        
+                        const endMin = classEvent.startMinOfDay + classEvent.durationMin;
+                        const endH = Math.floor(endMin / 60);
+                        const endM = endMin % 60;
+                        eventEndTime = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                        eventDuration = classEvent.durationMin;
+                      } else {
+                        // Evento dos dados mockados
+                        eventTime = classEvent.time || '08:00';
+                        eventEndTime = classEvent.endTime || '09:00';
+                        eventDuration = classEvent.duration || 45;
+                      }
+                      
+                      const timeDiff = getTimeDifference(eventTime, adjustedNow);
+                      
                       return (
                         <div key={classEvent.id}>
                           <div className={`flex items-center gap-4 p-4 border rounded-xl transition-all hover:shadow-md ${
                             classEvent.isInterval ? 'bg-kid-yellow/10 border-kid-yellow/20' : 'bg-white/80 border-kid-green/20'
                           }`}>
                              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                               classEvent.isInterval 
-                                 ? 'bg-kid-yellow/20 text-kid-orange' 
+                               classEvent.isInterval
+                                 ? 'bg-kid-yellow/20 text-kid-orange'
                                  : 'bg-kid-green/10 text-kid-green'
                              }`}>
-                              <span className="text-lg">{classEvent.icon}</span>
+                              <span className="text-lg">{classEvent.icon || '📚'}</span>
                             </div>
                              <div className="flex-1">
-                               <h3 className="font-semibold text-kid-green">{classEvent.subject}</h3>
-                               <p className="text-sm text-kid-green/70">{classEvent.title}</p>
+                               <h3 className="font-semibold text-kid-green">{classEvent.subject || classEvent.title}</h3>
+                               <p className="text-sm text-kid-green/70">{classEvent.title || classEvent.subject}</p>
                                 <div className="flex items-center gap-2 text-xs text-kid-green/60 mt-1">
                                  <Clock className="h-3 w-3" />
-                                 {classEvent.startTime} - {classEvent.endTime} ({classEvent.duration}min)
+                                 {eventTime} - {eventEndTime} ({eventDuration}min)
                                </div>
                             </div>
                             <div className="flex flex-col items-end gap-2">
@@ -989,19 +1284,19 @@ export default function Calendario() {
                                 {getStatusText(classEvent.status)}
                               </Badge>
                             )}
-                            {classEvent.canStart && !classEvent.isInterval && (
+                            {!classEvent.isInterval && (
                                <Button
                                  size="sm"
-                                 onClick={() => handleStartLesson(classEvent.lessonId)}
+                                 onClick={() => navigate('/aulaia')}
                                  className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-green/90 hover:to-kid-blue/90 text-white shadow-md"
                                >
                                 <Play className="h-3 w-3 mr-1" />
-                                Começar
+                                Iniciar Aula
                               </Button>
                             )}
                             </div>
                           </div>
-                          {index < todaySchedule.length - 1 && !classEvent.isInterval && (
+                          {index < todayClasses.length - 1 && !classEvent.isInterval && (
                             <div className="flex justify-center py-2">
                               <div className="w-8 h-8 bg-kid-green/20 rounded-full flex items-center justify-center">
                                 <div className="w-2 h-2 bg-kid-green rounded-full"></div>
@@ -1067,41 +1362,71 @@ export default function Calendario() {
               </CardHeader>
             <CardContent>
               <div className="grid grid-cols-7 gap-4">
+                <div className="col-span-7 flex items-center justify-between mb-2">
+                  <div className="text-sm text-muted-foreground">
+                    {t('calendar.tipDrag', 'Ative edição para arrastar dias e reorganizar aulas')}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant={editMode ? 'default' : 'outline'} size="sm" onClick={toggleEditMode}>
+                      {editMode ? t('calendar.editingOn', 'Edição ativa') : t('calendar.editingOff', 'Ativar edição')}
+                    </Button>
+                    {editMode && (
+                      <div className="text-xs text-muted-foreground">
+                        Arraste aulas entre os dias
+                      </div>
+                    )}
+                  </div>
+                </div>
                 {weekDays.map((day, index) => {
-                  const dayDate = addDays(weekStart, index);
-                  const dayClasses = weekClasses[day.short] || [];
-                  const isToday = isSameDay(dayDate, adjustedNow);
-                  const isDraggedOver = dropTargetDay === day.short;
-                  const isDragging = draggedDay === day.short;
-                  const hasClasses = dayClasses.length > 0;
-                  
+                  try {
+                    const dayDate = addDays(weekStart, index);
+                    const dateISO = dayDate.toISOString().split('T')[0];
+
+                    const daySchedule = weekSchedule?.days.find(d => d.dateISO === dateISO);
+                    let dayClasses: any[] = [];
+                    let hasClasses = false;
+                    let isDraggedOver = editMode && dropTargetDateISO === dateISO;
+                    let isDragging = editMode && dragSourceDateISO === dateISO;
+
+                    // Debug removido
+
+                    if (editMode) {
+                      dayClasses = editableWeek[dateISO] || [];
+                      hasClasses = dayClasses.length > 0;
+                    } else if (weekSchedule && daySchedule) {
+                      dayClasses = daySchedule.slots.filter(s => s.type === 'class');
+                      hasClasses = dayClasses.length > 0;
+                    } else {
+                      // Fallback para dados mockados se não houver weekSchedule
+                      const dayKey = getDayKey(day.short, locale);
+                      dayClasses = weekClasses[dayKey] || [];
+                      hasClasses = dayClasses.length > 0;
+                    }
+
+                    // Garantir que sempre temos dados para renderizar
+                    if (!dayClasses || dayClasses.length === 0) {
+                      dayClasses = [];
+                      hasClasses = false;
+                    }
+
+                    const isToday = isSameDay(dayDate, adjustedNow);
+
                   return (
-                    <div 
-                      key={day.short} 
+                    <div
+                      key={day.short}
                       className={`space-y-3 relative transition-all duration-200 ${
                         isToday ? 'ring-2 ring-primary rounded-lg p-3' : 'p-3'
-                      } ${
-                        isDraggedOver ? 'bg-primary/10 ring-2 ring-primary/50 rounded-lg' : ''
-                      } ${
-                        isDragging ? 'opacity-50 scale-95' : ''
-                      }`}
-                      draggable={hasClasses}
-                      onDragStart={(e) => handleDragStart(e, day.short)}
+                      } ${isDraggedOver ? 'bg-primary/10 ring-2 ring-primary/50 rounded-lg' : ''} ${isDragging ? 'opacity-50 scale-95' : ''}`}
+                      draggable={editMode && hasClasses}
+                      onDragStart={(e) => handleDragStart(e, dateISO)}
                       onDragOver={handleDragOver}
-                      onDragEnter={(e) => handleDragEnter(e, day.short)}
+                      onDragEnter={(e) => handleDragEnter(e, dateISO)}
                       onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, day.short)}
+                      onDrop={(e) => handleDrop(e, dateISO)}
                       onDragEnd={handleDragEnd}
                     >
-                      {/* Drop zone indicator */}
-                      {isDraggedOver && draggedDay !== day.short && (
-                        <div className="absolute inset-0 border-2 border-dashed border-primary/50 rounded-lg bg-primary/5 pointer-events-none flex items-center justify-center">
-                          <div className="text-primary font-medium text-sm">
-                            Soltar aqui
-                          </div>
-                        </div>
-                      )}
-                      
+                      {/* Drop zone indicator - removido pois não há mais drag & drop */}
+
                       <div className="text-center relative z-10">
                         <div className={`font-semibold ${isToday ? 'text-primary' : ''}`}>
                           {day.short}
@@ -1120,40 +1445,49 @@ export default function Calendario() {
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="space-y-2 relative z-10">
                         {dayClasses.length > 0 ? (
-                          dayClasses.map((classEvent) => (
-                            <div
-                              key={classEvent.id}
-                              className="p-3 bg-card border rounded-lg text-xs space-y-1 hover:shadow-sm transition-shadow cursor-pointer"
-                            >
-                              <div className="flex items-center gap-1">
-                                <span className="text-sm">{classEvent.icon}</span>
-                                <span className="font-medium truncate">{classEvent.subject}</span>
+                          dayClasses.map((classEvent) => {
+                            const isGeneratedSchedule = 'startMinOfDay' in classEvent;
+
+                            return (
+                              <div
+                                key={classEvent.id}
+                                className="p-3 bg-card border rounded-lg text-xs space-y-1 hover:shadow-sm transition-shadow cursor-pointer"
+                              >
+                                <div className="flex items-center gap-1">
+                                  <span className="text-sm">
+                                    {isGeneratedSchedule ? '📚' : classEvent.icon}
+                                  </span>
+                                  <span className="font-medium truncate">
+                                    {isGeneratedSchedule ? classEvent.title : classEvent.subject}
+                                  </span>
+                                </div>
+                                <div className="text-muted-foreground truncate">
+                                  {isGeneratedSchedule
+                                    ? `${formatTime(classEvent.startMinOfDay)} - ${formatTime(classEvent.startMinOfDay + classEvent.durationMin)}`
+                                    : classEvent.title
+                                  }
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    {isGeneratedSchedule ? `${classEvent.durationMin}min` : classEvent.time}
+                                  </span>
+                                  <Badge variant="outline" className={`text-[10px] py-0 ${
+                                    isGeneratedSchedule
+                                      ? 'bg-green-100 text-green-700 border-green-200'
+                                      : getStatusColor(classEvent.status)
+                                  }`}>
+                                    {isGeneratedSchedule ? 'Aula' : getStatusText(classEvent.status)}
+                                  </Badge>
+                                </div>
                               </div>
-                              <div className="text-muted-foreground truncate">{classEvent.title}</div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-muted-foreground">{classEvent.time}</span>
-                                <Badge variant="outline" className={`text-[10px] py-0 ${getStatusColor(classEvent.status)}`}>
-                                  {getStatusText(classEvent.status)}
-                                </Badge>
-                              </div>
-                              {classEvent.canStart && (
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleStartLesson(classEvent.lessonId)}
-                                  className="w-full h-7 text-xs bg-primary hover:bg-primary/90"
-                                >
-                                  <Play className="h-3 w-3 mr-1" />
-                                  Começar
-                                </Button>
-                              )}
-                            </div>
-                          ))
+                            );
+                          })
                         ) : (
                           <div className="text-center py-4 text-muted-foreground text-xs border-2 border-dashed border-muted/50 rounded-lg">
-                            {isDraggedOver && draggedDay !== day.short ? (
+                            {isDraggedOver && editMode ? (
                               'Solte as aulas aqui'
                             ) : (
                               'Sem aulas'
@@ -1163,29 +1497,73 @@ export default function Calendario() {
                       </div>
                     </div>
                   );
+                  } catch (error) {
+                    console.error('Erro ao renderizar dia:', error, { day, index });
+                    return (
+                      <div key={`error-${index}`} className="p-3 text-red-500 text-xs">
+                        Erro ao renderizar
+                      </div>
+                    );
+                  }
                 })}
               </div>
             </CardContent>
-            {/* Optional: calendário mensal visual */}
-            <MonthlyCalendar />
+                          {/* Calendário mensal funcional */}
+              <MonthMini
+                onSelectDate={handleSelectDate}
+                className="mt-6"
+              />
           </Card>
           </div>
 
-          {/* Today's Timeline */}
-          <DayTimeline
-            date={adjustedNow}
-            events={todaySchedule.map(event => ({
-              id: event.id,
-              startTime: event.startTime || event.time,
-              endTime: event.endTime,
-              subject: event.subject,
-              title: event.title,
-              status: event.status
-            }))}
-            now={adjustedNow}
-            locale={locale}
-            timeZone={timeZone}
-          />
+          {/* Today's Timeline (dados reais da semana) */}
+          {(() => {
+            const todayISO = toISODateLocal(adjustedNow);
+            let todayEvents: { id: string; startTime: string; endTime: string; subject: string; title: string; status: string }[] = [];
+
+            if (weekSchedule) {
+              const day = weekSchedule.days.find(d => d.dateISO === todayISO);
+              if (day) {
+                todayEvents = day.slots
+                  .filter(s => s.type === 'class')
+                  .map(s => {
+                    const startH = Math.floor(s.startMinOfDay / 60).toString().padStart(2, '0');
+                    const startM = (s.startMinOfDay % 60).toString().padStart(2, '0');
+                    const endMin = s.startMinOfDay + s.durationMin;
+                    const endH = Math.floor(endMin / 60).toString().padStart(2, '0');
+                    const endM = (endMin % 60).toString().padStart(2, '0');
+                                       return {
+                    id: s.id,
+                    startTime: `${startH}:${startM}`,
+                    endTime: `${endH}:${endM}`,
+                    subject: s.title || '',
+                    title: s.subjectId ? s.subjectId : '',
+                    status: 'upcoming'
+                  };
+                  });
+              }
+            } else if (editMode) {
+              const list = editableWeek[todayISO] || [];
+              todayEvents = list.map((ev: any, idx: number) => ({
+                id: ev.id || `edit-${idx}`,
+                startTime: ev.startTime || '08:00',
+                endTime: ev.endTime || '09:00',
+                subject: ev.title || ev.subject || 'Aula',
+                title: ev.subject || '',
+                status: 'upcoming'
+              }));
+            }
+
+            return (
+              <DayTimeline
+                date={adjustedNow}
+                events={todayEvents}
+                now={adjustedNow}
+                locale={locale}
+                timeZone={timeZone}
+              />
+            );
+          })()}
         </div>
 
         {/* Quick Stats */}
@@ -1201,7 +1579,7 @@ export default function Calendario() {
               </div>
             </div>
           </Card>
-          
+
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center">
@@ -1213,7 +1591,7 @@ export default function Calendario() {
               </div>
             </div>
           </Card>
-          
+
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-warning/20 text-warning rounded-lg flex items-center justify-center">

@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/Layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { BookOpen, Search, Trophy, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { BookOpen, Search, Trophy, Clock, CheckCircle, AlertCircle, Brain, Calculator } from 'lucide-react';
 
 interface Exercise {
   id: string;
@@ -86,6 +87,7 @@ const mockExercises: Exercise[] = [
 ];
 
 export default function Exercicios() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('all');
 
@@ -132,18 +134,28 @@ export default function Exercicios() {
     <AppLayout>
       <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-kid-green/20">
-          <div className="p-3 bg-gradient-to-br from-kid-green to-kid-blue rounded-full">
-            <BookOpen className="h-8 w-8 text-white" />
+        <div className="flex items-center justify-between bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-kid-green/20">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-kid-green to-kid-blue rounded-full">
+              <BookOpen className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                Lista de Exercícios
+              </h1>
+              <p className="text-kid-green/70 font-medium text-lg">
+                Pratique e reforce seu aprendizado
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
-              Lista de Exercícios
-            </h1>
-            <p className="text-kid-green/70 font-medium text-lg">
-              Pratique e reforce seu aprendizado
-            </p>
-          </div>
+          
+          <Button 
+            onClick={() => navigate('/quizzes')}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+          >
+            <Brain className="h-5 w-5 mr-2" />
+            Ver Todos os Quizzes
+          </Button>
         </div>
 
         {/* Stats Cards */}
@@ -229,6 +241,60 @@ export default function Exercicios() {
           </CardContent>
         </Card>
 
+        {/* Quizzes Disponíveis */}
+        <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-500 rounded-lg">
+                <Brain className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl text-purple-800">Quizzes Disponíveis</CardTitle>
+                <p className="text-purple-600 text-sm">Teste seus conhecimentos em diferentes matérias</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 border-purple-300 hover:border-purple-500 hover:bg-purple-50"
+                onClick={() => navigate('/quizzes/math-1')}
+              >
+                <Calculator className="h-6 w-6 text-purple-600" />
+                <span className="text-sm font-medium">Matemática</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 border-green-300 hover:border-green-500 hover:bg-green-50"
+                onClick={() => navigate('/quizzes/lang-1')}
+              >
+                <BookOpen className="h-6 w-6 text-green-600" />
+                <span className="text-sm font-medium">Língua</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 border-blue-300 hover:border-blue-500 hover:bg-blue-50"
+                onClick={() => navigate('/quizzes/sci-1')}
+              >
+                <Brain className="h-6 w-6 text-blue-600" />
+                <span className="text-sm font-medium">Ciências</span>
+              </Button>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <Button 
+                onClick={() => navigate('/quizzes')}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              >
+                Ver Todos os Quizzes
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Exercise List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredExercises.map((exercise) => (
@@ -292,12 +358,50 @@ export default function Exercicios() {
                         <Button variant="outline" className="flex-1">
                           Ver resultado
                         </Button>
-                        <Button className="flex-1 bg-secondary hover:bg-secondary/90">
+                        <Button 
+                          className="flex-1 bg-secondary hover:bg-secondary/90"
+                          onClick={() => {
+                            if (exercise.type === 'quiz') {
+                              // Mapear para quiz real baseado na matéria
+                              const subjectMap: Record<string, string> = {
+                                'Matemática': 'math-1',
+                                'Ciências': 'sci-1',
+                                'Português': 'lang-1',
+                                'História': 'hist-1'
+                              };
+                              const quizId = subjectMap[exercise.subject];
+                              if (quizId) {
+                                navigate(`/quizzes/${quizId}`);
+                              } else {
+                                navigate('/quizzes');
+                              }
+                            }
+                          }}
+                        >
                           Refazer
                         </Button>
                       </>
                     ) : (
-                      <Button className="w-full btn-lykeon bg-primary hover:bg-primary/90">
+                      <Button 
+                        className="w-full btn-lykeon bg-primary hover:bg-primary/90"
+                        onClick={() => {
+                          if (exercise.type === 'quiz') {
+                            // Mapear para quiz real baseado na matéria
+                            const subjectMap: Record<string, string> = {
+                              'Matemática': 'math-1',
+                              'Ciências': 'sci-1',
+                              'Português': 'lang-1',
+                              'História': 'hist-1'
+                            };
+                            const quizId = subjectMap[exercise.subject];
+                            if (quizId) {
+                              navigate(`/quizzes/${quizId}`);
+                            } else {
+                              navigate('/quizzes');
+                            }
+                          }
+                        }}
+                      >
                         {exercise.type === 'quiz' ? 'Iniciar Quiz' : 'Enviar Trabalho'}
                       </Button>
                     )}

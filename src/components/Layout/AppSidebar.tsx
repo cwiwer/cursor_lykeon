@@ -11,7 +11,8 @@ import {
   Users,
   UserCheck,
   Trophy,
-  Bell
+  Bell,
+  Brain
 } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -46,6 +47,7 @@ export function AppSidebar() {
     { title: t('dashboard'), url: '/dashboard-aluno', icon: Home },
     { title: t('calendar'), url: '/calendario', icon: Calendar },
     { title: t('exercises'), url: '/exercicios', icon: BookOpen },
+    { title: t('quizzes'), url: '/quizzes', icon: Brain },
     { title: t('reports'), url: '/relatorios', icon: BarChart3 },
     { title: t('messages'), url: '/mensagens', icon: MessageCircle },
     { title: t('achievements'), url: '/conquistas', icon: Trophy },

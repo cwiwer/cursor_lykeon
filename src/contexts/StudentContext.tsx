@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getMyChildren, getActiveChild, setActiveChildId, type ChildProfile } from "../services/students";
+import { useAuth } from "../hooks/useAuth";
 
 type Ctx = {
   children: ChildProfile[];
@@ -24,13 +25,23 @@ const StudentContext = createContext<Ctx>({
 export const useStudent = () => useContext(StudentContext);
 
 export function StudentProvider({ children: ui }: { children: React.ReactNode }) {
+  const { user, loading: authLoading } = useAuth();
   const [children, setChildren] = useState<ChildProfile[]>([]);
   const [activeChild, setActive] = useState<ChildProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadChildren = async () => {
     try {
-      console.log('StudentContext: Carregando crianças...');
+      // Só carregar crianças se houver usuário autenticado
+      if (!user) {
+        console.log('StudentContext: Nenhum usuário autenticado, limpando dados');
+        setChildren([]);
+        setActive(null);
+        setLoading(false);
+        return;
+      }
+
+      console.log('StudentContext: Carregando crianças para usuário:', user.id);
       const list = await getMyChildren();
       console.log('StudentContext: Crianças carregadas:', list);
       setChildren(list);
@@ -56,9 +67,19 @@ export function StudentProvider({ children: ui }: { children: React.ReactNode })
     }
   };
 
+  // Carregar crianças sempre que o usuário mudar
   useEffect(() => {
-    loadChildren();
-  }, []);
+    console.log('StudentContext: useEffect [user, authLoading] executado:', {
+      user: user?.id,
+      authLoading,
+      childrenCount: children.length,
+      activeChildId: activeChild?.id
+    });
+    
+    if (!authLoading) {
+      loadChildren();
+    }
+  }, [user, authLoading]);
 
   function setActiveChild(c: ChildProfile) {
     console.log('StudentContext: Definindo aluno ativo:', c);

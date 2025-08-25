@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { TeacherAvatar } from '@/components/aula/TeacherAvatar';
 import { SpeechBubble } from '@/components/aula/SpeechBubble';
 import { SessionControls } from '@/components/aula/SessionControls';
+import VerticalDayTimeline, { TimelineBlock } from '@/components/aula/VerticalDayTimeline';
 import { useStudent } from '@/contexts/StudentContext';
 import { 
   startLesson, 
@@ -24,15 +25,16 @@ import {
 import { 
   LogOut, 
   Send, 
-  Rocket,
   MessageSquare,
   Clock
 } from 'lucide-react';
+import { getDaySchedule } from '@/services/scheduleGenerator';
+import { LessonSlot } from '@/types/schedule';
 
 export default function AulaIA() {
   const { lessonId } = useParams<{ lessonId?: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { activeChild: activeStudent } = useStudent();
   
   const [session, setSession] = useState<Session | null>(null);
@@ -189,25 +191,34 @@ export default function AulaIA() {
         <div className="max-w-7xl mx-auto p-6">
           <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
             
-            {/* Left Side - Decorativos */}
-            <div className="col-span-2 space-y-4">
-              <div className="space-y-6">
-                {/* Foguetes decorativos */}
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`transform ${
-                      i % 2 === 0 ? 'rotate-12' : '-rotate-12'
-                    } transition-transform hover:scale-110`}
-                  >
-                    <Rocket 
-                      className={`h-12 w-12 ${
-                        i < 4 ? 'text-kid-orange' : 'text-kid-green'
-                      } opacity-80`} 
-                    />
-                  </div>
-                ))}
-              </div>
+            {/* Left Side - Timeline Vertical */}
+            <div className="col-span-2 flex justify-center">
+                      <VerticalDayTimeline
+          items={(() => {
+            if (!activeStudent) return [];
+            
+            // Obter a grade do dia atual
+            const today = new Date();
+            const dateISO = today.toISOString().split('T')[0];
+            const daySchedule = getDaySchedule({
+              childId: activeStudent.id,
+              dateISO,
+              locale: i18n.language || 'pt'
+            });
+            
+            // Converter slots para formato da timeline
+            return daySchedule.slots.map(slot => ({
+              type: slot.type as "class" | "break",
+              label: slot.type === "class" ? slot.title || "Aula" : t("lesson.break", "Intervalo"),
+              minutes: slot.durationMin,
+              color: slot.type === "class" ? "bg-indigo-500 dark:bg-indigo-400" : "bg-slate-400/60 dark:bg-slate-500"
+            }));
+          })()}
+          dayStart={{ hour: 8, minute: 0 }}
+          rocketSrc="/branding/rocket.svg"
+          showRocketMarker={true}
+          className="hidden md:flex w-16 h-full py-6"
+        />
             </div>
 
             {/* Center - Quadro Negro */}

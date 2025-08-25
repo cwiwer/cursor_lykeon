@@ -7,6 +7,9 @@
   "password": "Password",
   "name": "Name",
   "calendar": "Calendar",
+  "calendar.today": "Today",
+  "calendar.month.prev": "Previous month",
+  "calendar.month.next": "Next month",
   "calendar.todayLabel": "Today",
   "calendar.thisWeek": "This week",
   "calendar.prevWeek": "Previous week",
@@ -118,6 +121,12 @@
     },
     "leave": "Leave lesson"
   },
+  "lesson": {
+    "subject1": "Lesson 1",
+    "subject2": "Lesson 2",
+    "subject3": "Lesson 3",
+    "break": "Break"
+  },
   "welcome_to_lykeon": "Welcome to Lykeon!",
   "no_students_message": "You don't have any students registered yet. How about starting by adding your first child?",
   "register_student": "Register student",
@@ -143,5 +152,26 @@
     "errorGeneric": "Could not complete the action. Please try again.",
     "activeReassigned": "Active student updated.",
     "noChildren": "No children registered."
+  },
+  "subjects": {
+    "portugues": "Portuguese",
+    "matematica": "Mathematics",
+    "ciencias": "Science",
+    "historia": "History",
+    "geografia": "Geography",
+    "ingles": "English",
+    "frances": "French",
+    "artes": "Arts",
+    "educacao_fisica": "Physical Education",
+    "musica": "Music",
+    "projeto_leitura": "Reading Project"
+  },
+  "quiz": {
+    "title": "Quizzes",
+    "start": "Start Quiz",
+    "finish": "Finish",
+    "score": "You got {{correct}} out of {{total}} correct",
+    "xpEarned": "You earned {{points}} XP!",
+    "quizzes": "Quizzes"
   }
 }

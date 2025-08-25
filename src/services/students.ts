@@ -23,18 +23,41 @@ export async function getMyChildren(): Promise<ChildProfile[]> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
-  const { data, error } = await supabase
+  console.log('getMyChildren: Buscando crianças para usuário:', user.id);
+
+  // Primeiro, buscar os IDs das crianças vinculadas ao usuário
+  const { data: parentChildren, error: parentError } = await supabase
     .from("parent_children")
-    .select(`
-      child_profiles (
-        id, first_name, last_name, grade, birthdate, avatar_url, created_at
-      )
-    `)
-    .eq("parent_user_id", user.id)
+    .select("child_id")
+    .eq("parent_user_id", user.id);
+    
+  if (parentError) {
+    console.error('Erro ao buscar parent_children:', parentError);
+    throw parentError;
+  }
+
+  if (!parentChildren || parentChildren.length === 0) {
+    console.log('getMyChildren: Nenhuma criança vinculada encontrada');
+    return [];
+  }
+
+  const childIds = parentChildren.map(pc => pc.child_id);
+  console.log('getMyChildren: IDs das crianças encontrados:', childIds);
+
+  // Agora buscar os perfis das crianças
+  const { data: childProfiles, error: childError } = await supabase
+    .from("child_profiles")
+    .select("id, first_name, last_name, grade, birthdate, avatar_url, created_at")
+    .in("id", childIds)
     .order("created_at", { ascending: false });
     
-  if (error) throw error;
-  return (data || []).map((r: any) => r.child_profiles);
+  if (childError) {
+    console.error('Erro ao buscar child_profiles:', childError);
+    throw childError;
+  }
+
+  console.log('getMyChildren: Perfis das crianças encontrados:', childProfiles);
+  return childProfiles || [];
 }
 
 export async function createChild(values: ChildFormValues): Promise<string> {

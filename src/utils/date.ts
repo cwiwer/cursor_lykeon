@@ -1,4 +1,5 @@
-export function startOfWeek(d: Date, weekStartsOn: 0|1 = 1) {
+export function startOfWeek(d: Date, weekStartsOn: 0|1 = 0) {
+  // FIX: Agora sempre começa no domingo (0) por padrão
   const day = d.getDay(); // 0=Sun..6=Sat
   const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
   const res = new Date(d); 
@@ -33,8 +34,9 @@ export function prefersHour12(locale: string) {
   return /^en(-|$)/i.test(locale);
 }
 
-export function getWeekDays(locale: string, weekStart: number = 1) {
-  const baseDate = new Date(2024, 0, weekStart); // Segunda-feira
+export function getWeekDays(locale: string, weekStart: number = 0) {
+  // FIX: Sempre começar no domingo (0) para primeira coluna
+  const baseDate = new Date(2024, 0, 7); // 2024-01-07 é domingo
   const days = [];
   
   for (let i = 0; i < 7; i++) {
