@@ -47,7 +47,6 @@ export function AppSidebar() {
     { title: t('sidebar.dashboard'), url: '/dashboard-aluno', icon: Home },
     { title: t('sidebar.calendar'), url: '/calendario', icon: Calendar },
     { title: t('exercises'), url: '/exercicios', icon: BookOpen },
-    { title: t('quizzes'), url: '/quizzes', icon: Brain },
     { title: t('reports'), url: '/relatorios', icon: BarChart3 },
     { title: t('messages'), url: '/mensagens', icon: MessageCircle },
     { title: t('achievements'), url: '/conquistas', icon: Trophy },

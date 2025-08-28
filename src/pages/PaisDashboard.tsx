@@ -148,7 +148,7 @@ export default function PaisDashboard() {
                   {/* Placeholder para KPIs futuros */}
                   <div className="grid grid-cols-3 gap-2">
                     <KPIBox label={t('parentsDashboard.kpis.attendance')} value="—%" />
-                    <KPIBox label={t('parentsDashboard.kpis.quizzes')} value="—%" />
+                    <KPIBox label="Exercícios" value="—%" />
                     <KPIBox label={t('parentsDashboard.kpis.hoursPerWeek')} value="—h" />
                   </div>
 
@@ -177,15 +177,15 @@ export default function PaisDashboard() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-foreground">{t('parentsDashboard.activities.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Link to="/quizzes">
+            <Link to="/exercicios">
               <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
                 <CardContent className="p-6 text-center">
                   <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
                     <Brain className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-blue-800 mb-2">{t('parentsDashboard.activities.quizzes.title')}</h3>
+                  <h3 className="text-lg font-bold text-blue-800 mb-2">Exercícios</h3>
                   <p className="text-sm text-blue-600">
-                    {t('parentsDashboard.activities.quizzes.description')}
+                    Pratique e teste seus conhecimentos
                   </p>
                 </CardContent>
               </Card>

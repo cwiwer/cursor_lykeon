@@ -26,10 +26,32 @@
 
 
   "exercises": "Exercises",
+  "exercises": {
+    "title": "Exercises",
+    "subtitle": "Practice and progress at your pace.",
+    "filters": {
+      "search": "Search",
+      "subject": "Subject",
+      "grade": "Grade",
+      "difficulty": "Difficulty"
+    },
+    "kpi": {
+      "total": "Total",
+      "completed": "Completed",
+      "accuracy": "Accuracy"
+    },
+    "card": {
+      "timed": "Timed",
+      "auto": "Auto-graded",
+      "questions": "{{count}} questions"
+    },
+    "empty": "No exercises found.",
+    "error": "Couldn't load exercises."
+  },
   "exercisesPage": {
     "title": "Exercise List",
     "subtitle": "Practice and reinforce your learning",
-    "viewAllQuizzes": "View All Quizzes",
+
     "stats": {
       "totalExercises": "Total exercises",
       "completed": "Completed",
@@ -40,13 +62,7 @@
       "placeholder": "Search exercises...",
       "allSubjects": "All subjects"
     },
-    "quizzes": {
-      "title": "Available Quizzes",
-      "subtitle": "Test your knowledge in different subjects",
-      "mathematics": "Mathematics",
-      "language": "Language",
-      "sciences": "Sciences"
-    },
+
     "difficulty": {
       "easy": "Easy",
       "medium": "Medium",
@@ -65,7 +81,7 @@
     "actions": {
       "viewResult": "View result",
       "redo": "Redo",
-      "startQuiz": "Start Quiz",
+  
       "submitWork": "Submit Work",
       "upload": "Upload"
     },
@@ -322,11 +338,10 @@
   },
   "quiz": {
     "title": "Quizzes",
-    "start": "Start Quiz",
+    "start": "Start",
     "finish": "Finish",
     "score": "You got {{correct}} out of {{total}} correct",
-    "xpEarned": "You earned {{points}} XP!",
-    "quizzes": "Quizzes"
+    "xpEarned": "You earned {{points}} XP!"
   },
   "calendar": {
     "title": "My Calendar",
@@ -503,7 +518,7 @@
     "manageChild": "Manage {{name}}",
     "kpis": {
       "attendance": "Attendance",
-      "quizzes": "Quizzes",
+
       "hoursPerWeek": "⏰ Hours/week"
     },
     "alerts": {
@@ -516,10 +531,7 @@
     },
     "activities": {
       "title": "🎯 Activities",
-      "quizzes": {
-        "title": "Quizzes",
-        "description": "Test your children's knowledge"
-      },
+
       "calendar": {
         "title": "Calendar",
         "description": "Track the school schedule"
@@ -540,7 +552,7 @@
     "calendar": "📅 Calendar",
     "kpis": {
       "attendance": "📊 Attendance",
-      "quizCorrect": "Correct quizzes",
+
       "hoursPerWeek": "⏰ Hours/week"
     },
     "comingSoon": "Coming soon",

@@ -124,7 +124,7 @@ export function MonthMini({ onSelectDate, selectedDate, className }: MonthMiniPr
               {/* Eventos de exemplo (mantidos do código original) */}
               {cell.inCurrentMonth && cell.date.getDate() % 5 === 0 && (
                 <span className="inline-block mt-1 px-2 py-0.5 rounded bg-kid-blue/20 text-kid-blue border border-kid-blue/30 text-[10px]">
-                  Quiz
+                  Exercício
                 </span>
               )}
               {cell.inCurrentMonth && cell.date.getDate() % 7 === 0 && (

@@ -24,8 +24,7 @@ import Conquistas from "./pages/Conquistas";
 import Notificacoes from "./pages/Notificacoes";
 import Configuracoes from "./pages/Configuracoes";
 import Assinaturas from "./pages/Assinaturas";
-import Quizzes from "./pages/Quizzes";
-import QuizPlay from "./pages/QuizPlay";
+
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -62,8 +61,6 @@ const App = () => (
             <Route path="/notificacoes" element={<ProtectedRoute><Notificacoes /></ProtectedRoute>} />
             <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
             <Route path="/assinaturas" element={<ProtectedRoute><Assinaturas /></ProtectedRoute>} />
-            <Route path="/quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
-            <Route path="/quizzes/:quizId" element={<ProtectedRoute><QuizPlay /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -124,7 +124,7 @@ export default function AlunoPerfil() {
           
           <Card className="border-2 border-pastel-purple/20 bg-gradient-card backdrop-blur-sm hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">{t('studentProfile.kpis.quizCorrect')}</CardTitle>
+                              <CardTitle className="text-sm text-muted-foreground">Exercícios Corretos</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-extrabold text-pastel-purple mb-2">—%</div>

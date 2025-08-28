@@ -6,452 +6,359 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { BookOpen, Search, Trophy, Clock, CheckCircle, AlertCircle, Brain, Calculator } from 'lucide-react';
+import { 
+  BookOpen, 
+  Search, 
+  Trophy, 
+  Clock, 
+  CheckCircle, 
+  AlertCircle, 
+  Brain, 
+  Calculator,
+  Target,
+  Timer,
+  Zap
+} from 'lucide-react';
+import { useExercises, type Exercise } from '@/hooks/useExercises';
 
-interface Exercise {
-  id: string;
-  lessonTitle: string;
-  subject: string;
-  type: 'quiz' | 'upload';
-  score: number | null;
-  maxScore: number;
-  completedAt: string | null;
-  difficulty: 'easy' | 'medium' | 'hard';
-  timeLimit?: number; // em minutos
-}
+const subjectIcons: Record<string, React.ReactNode> = {
+  mathematics: <Calculator className="h-5 w-5" />,
+  sciences: <Brain className="h-5 w-5" />,
+  portuguese: <BookOpen className="h-5 w-5" />,
+  history: <Clock className="h-5 w-5" />,
+  geography: <Target className="h-5 w-5" />
+};
 
-const mockExercises: Exercise[] = [
-  {
-    id: '1',
-    lessonTitle: 'solarSystem',
-    subject: 'sciences',
-    type: 'quiz',
-    score: 8,
-    maxScore: 10,
-    completedAt: '2024-01-20',
-    difficulty: 'medium',
-    timeLimit: 15
-  },
-  {
-    id: '2', 
-    lessonTitle: 'fractions',
-    subject: 'mathematics',
-    type: 'quiz',
-    score: 9,
-    maxScore: 10,
-    completedAt: '2024-01-19',
-    difficulty: 'hard',
-    timeLimit: 20
-  },
-  {
-    id: '3',
-    lessonTitle: 'narrativeText',
-    subject: 'portuguese',
-    type: 'upload',
-    score: null,
-    maxScore: 10,
-    completedAt: null,
-    difficulty: 'medium'
-  },
-  {
-    id: '4',
-    lessonTitle: 'industrialRevolution',
-    subject: 'history', 
-    type: 'quiz',
-    score: 6,
-    maxScore: 10,
-    completedAt: '2024-01-18',
-    difficulty: 'medium',
-    timeLimit: 25
-  },
-  {
-    id: '5',
-    lessonTitle: 'physicalStates',
-    subject: 'sciences',
-    type: 'quiz',
-    score: null,
-    maxScore: 10,
-    completedAt: null,
-    difficulty: 'easy',
-    timeLimit: 10
-  },
-  {
-    id: '6',
-    lessonTitle: 'multiplication',
-    subject: 'mathematics',
-    type: 'upload',
-    score: 7,
-    maxScore: 10,
-    completedAt: '2024-01-17',
-    difficulty: 'easy'
-  }
-];
+const subjectColors: Record<string, string> = {
+  mathematics: "bg-blue-100 text-blue-800 border-blue-200",
+  sciences: "bg-purple-100 text-purple-800 border-purple-200",
+  portuguese: "bg-green-100 text-green-800 border-green-200",
+  history: "bg-orange-100 text-orange-800 border-orange-200",
+  geography: "bg-teal-100 text-teal-800 border-teal-200"
+};
+
+const difficultyColors = {
+  easy: "bg-green-100 text-green-800",
+  medium: "bg-yellow-100 text-yellow-800",
+  hard: "bg-red-100 text-red-800"
+};
 
 export default function Exercicios() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all');
 
-  const subjects = ['all', 'mathematics', 'sciences', 'portuguese', 'history'];
-
-  const filteredExercises = mockExercises.filter(exercise => {
-    const lessonTitleText = t(`exercisesPage.exercises.${exercise.lessonTitle}`);
-    const subjectText = t(`exercisesPage.subjects.${exercise.subject}`);
-    const matchesSearch = lessonTitleText.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         subjectText.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSubject = selectedSubject === 'all' || exercise.subject === selectedSubject;
-    return matchesSearch && matchesSubject;
+  const { exercises, loading, error, total, completed, averageAccuracy } = useExercises({
+    search: searchTerm,
+    subject: selectedSubject,
+    difficulty: selectedDifficulty
   });
 
-  const getDifficultyColor = (difficulty: Exercise['difficulty']) => {
-    switch (difficulty) {
-      case 'easy': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'hard': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const subjects = ['all', 'mathematics', 'sciences', 'portuguese', 'history', 'geography'];
+  const difficulties = ['all', 'easy', 'medium', 'hard'];
+
+  const handleStartExercise = (exercise: Exercise) => {
+    // Todos os exercícios agora vão para a mesma rota
+    navigate(`/exercicios/${exercise.id}`);
   };
 
-  const getDifficultyText = (difficulty: Exercise['difficulty']) => {
-    switch (difficulty) {
-      case 'easy': return t('exercisesPage.difficulty.easy');
-      case 'medium': return t('exercisesPage.difficulty.medium');
-      case 'hard': return t('exercisesPage.difficulty.hard');
-      default: return t('exercisesPage.difficulty.medium');
-    }
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const getScoreColor = (score: number, maxScore: number) => {
-    const percentage = (score / maxScore) * 100;
-    if (percentage >= 80) return 'text-green-600';
-    if (percentage >= 60) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+  if (loading) {
+    return (
+      <AppLayout>
+        <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
+          <div className="max-w-7xl mx-auto">
+            {/* Header Skeleton */}
+            <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm mb-8">
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <div className="flex justify-center mb-4">
+                    <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                      <Target className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                  <div className="h-8 w-64 mx-auto mb-2 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-6 w-96 mx-auto bg-gray-200 rounded animate-pulse" />
+                </div>
+              </CardContent>
+            </Card>
 
-  const completedExercises = mockExercises.filter(ex => ex.score !== null);
-  const totalScore = completedExercises.reduce((sum, ex) => sum + (ex.score || 0), 0);
-  const totalMaxScore = completedExercises.reduce((sum, ex) => sum + ex.maxScore, 0);
-  const averagePercentage = totalMaxScore > 0 ? Math.round((totalScore / totalMaxScore) * 100) : 0;
+            {/* KPIs Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[1, 2, 3].map(i => (
+                <Card key={i}>
+                  <CardContent className="p-6 text-center">
+                    <div className="h-8 w-24 mx-auto mb-2 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-12 w-16 mx-auto bg-gray-200 rounded animate-pulse" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Filters Skeleton */}
+            <div className="flex gap-4 mb-8">
+              <div className="h-10 w-64 bg-gray-200 rounded animate-pulse" />
+              <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+              <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+            </div>
+
+            {/* Cards Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <Card key={i}>
+                  <CardHeader>
+                    <div className="h-6 w-48 mb-2 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-4 w-full mb-2 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 w-3/4 mb-4 bg-gray-200 rounded animate-pulse" />
+                    <div className="flex gap-2">
+                      <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AppLayout>
+        <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6">
+          <div className="max-w-7xl mx-auto text-center">
+            <Card className="border-2 border-red-200 bg-red-50">
+              <CardContent className="p-12">
+                <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-red-800 mb-2">
+                  {t('exercises.error')}
+                </h2>
+                <p className="text-red-600 mb-4">{error}</p>
+                <Button onClick={() => window.location.reload()}>
+                  Tentar Novamente
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
       <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
-        {/* Header */}
-        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
-                  <BookOpen className="h-8 w-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
-                    {t('exercisesPage.title')}
-                  </h1>
-                  <p className="text-lg text-kid-green mt-1">
-                    {t('exercisesPage.subtitle')}
-                  </p>
-                </div>
-              </div>
-              
-              <Button 
-                onClick={() => navigate('/quizzes')}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-              >
-                <Brain className="h-5 w-5 mr-2" />
-                {t('exercisesPage.viewAllQuizzes')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
-                <BookOpen className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{mockExercises.length}</p>
-                <p className="text-sm text-muted-foreground">{t('exercisesPage.stats.totalExercises')}</p>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
-                <CheckCircle className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{completedExercises.length}</p>
-                <p className="text-sm text-muted-foreground">{t('exercisesPage.stats.completed')}</p>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
-                <Trophy className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{averagePercentage}%</p>
-                <p className="text-sm text-muted-foreground">{t('exercisesPage.stats.averageScore')}</p>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
-                <AlertCircle className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{mockExercises.length - completedExercises.length}</p>
-                <p className="text-sm text-muted-foreground">{t('exercisesPage.stats.pending')}</p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={t('exercisesPage.search.placeholder')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 input-lykeon"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {subjects.map((subject) => (
-                  <Button
-                    key={subject}
-                    variant={selectedSubject === subject ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedSubject(subject)}
-                    className={selectedSubject === subject ? "bg-primary" : ""}
-                  >
-                    {subject === 'all' ? t('exercisesPage.search.allSubjects') : t(`exercisesPage.subjects.${subject}`)}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quizzes Disponíveis */}
-        <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500 rounded-lg">
-                <Brain className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <CardTitle className="text-xl text-purple-800">{t('exercisesPage.quizzes.title')}</CardTitle>
-                <p className="text-purple-600 text-sm">{t('exercisesPage.quizzes.subtitle')}</p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button 
-                variant="outline" 
-                className="h-20 flex-col gap-2 border-purple-300 hover:border-purple-500 hover:bg-purple-50"
-                onClick={() => navigate('/quizzes/math-1')}
-              >
-                <Calculator className="h-6 w-6 text-purple-600" />
-                <span className="text-sm font-medium">{t('exercisesPage.quizzes.mathematics')}</span>
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="h-20 flex-col gap-2 border-green-300 hover:border-green-500 hover:bg-green-50"
-                onClick={() => navigate('/quizzes/lang-1')}
-              >
-                <BookOpen className="h-6 w-6 text-green-600" />
-                <span className="text-sm font-medium">{t('exercisesPage.quizzes.language')}</span>
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="h-20 flex-col gap-2 border-blue-300 hover:border-blue-500 hover:bg-blue-50"
-                onClick={() => navigate('/quizzes/sci-1')}
-              >
-                <Brain className="h-6 w-6 text-blue-600" />
-                <span className="text-sm font-medium">{t('exercisesPage.quizzes.sciences')}</span>
-              </Button>
-            </div>
-            
-            <div className="mt-4 text-center">
-              <Button 
-                onClick={() => navigate('/quizzes')}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-              >
-                {t('exercisesPage.viewAllQuizzes')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Exercise List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredExercises.map((exercise) => (
-            <Card key={exercise.id} className="card-lykeon hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{t(`exercisesPage.exercises.${exercise.lessonTitle}`)}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{t(`exercisesPage.subjects.${exercise.subject}`)}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Badge variant="outline" className={getDifficultyColor(exercise.difficulty)}>
-                      {getDifficultyText(exercise.difficulty)}
-                    </Badge>
-                    <Badge variant="outline">
-                      {exercise.type === 'quiz' ? t('quiz.quizzes') : t('exercisesPage.actions.upload')}
-                    </Badge>
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm mb-8">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                    <Target className="h-8 w-8 text-white" />
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Score Display */}
-                  {exercise.score !== null ? (
-                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        <span className="font-medium">{t('exercisesPage.status.completed')}</span>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-lg font-bold ${getScoreColor(exercise.score, exercise.maxScore)}`}>
-                          {exercise.score}/{exercise.maxScore}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {t('exercisesPage.exercise.scorePercentage', { percentage: Math.round((exercise.score / exercise.maxScore) * 100) })}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 p-3 bg-blue-50 text-blue-800 rounded-lg">
-                      <AlertCircle className="h-5 w-5" />
-                      <span className="font-medium">{t('exercisesPage.status.notStarted')}</span>
-                    </div>
-                  )}
+                <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent mb-2">
+                  {t('exercises.title')}
+                </h1>
+                <p className="text-lg text-kid-green">
+                  {t('exercises.subtitle')}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
-                  {/* Exercise Info */}
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{t('exercisesPage.exercise.maxScore', { score: exercise.maxScore })}</span>
-                    {exercise.timeLimit && (
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {t('exercisesPage.exercise.timeLimit', { time: exercise.timeLimit })}
-                      </span>
-                    )}
-                  </div>
+          {/* KPIs */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Target className="h-6 w-6 text-kid-blue mr-2" />
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {t('exercises.kpi.total')}
+                  </span>
+                </div>
+                <div className="text-3xl font-bold text-kid-blue">{total}</div>
+              </CardContent>
+            </Card>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    {exercise.score !== null ? (
-                      <>
-                        <Button variant="outline" className="flex-1">
-                          {t('exercisesPage.actions.viewResult')}
-                        </Button>
-                        <Button 
-                          className="flex-1 bg-secondary hover:bg-secondary/90"
-                          onClick={() => {
-                            if (exercise.type === 'quiz') {
-                              // Mapear para quiz real baseado na matéria
-                              const subjectMap: Record<string, string> = {
-                                'mathematics': 'math-1',
-                                'sciences': 'sci-1',
-                                'portuguese': 'lang-1',
-                                'history': 'hist-1'
-                              };
-                              const quizId = subjectMap[exercise.subject];
-                              if (quizId) {
-                                navigate(`/quizzes/${quizId}`);
-                              } else {
-                                navigate('/quizzes');
-                              }
-                            }
-                          }}
-                        >
-                          {t('exercisesPage.actions.redo')}
-                        </Button>
-                      </>
-                    ) : (
-                      <Button 
-                        className="w-full btn-lykeon bg-primary hover:bg-primary/90"
-                        onClick={() => {
-                          if (exercise.type === 'quiz') {
-                            // Mapear para quiz real baseado na matéria
-                            const subjectMap: Record<string, string> = {
-                              'mathematics': 'math-1',
-                              'sciences': 'sci-1',
-                              'portuguese': 'lang-1',
-                              'history': 'hist-1'
-                            };
-                            const quizId = subjectMap[exercise.subject];
-                            if (quizId) {
-                              navigate(`/quizzes/${quizId}`);
-                            } else {
-                              navigate('/quizzes');
-                            }
-                          }
-                        }}
-                      >
-                        {exercise.type === 'quiz' ? t('exercisesPage.actions.startQuiz') : t('exercisesPage.actions.submitWork')}
-                      </Button>
-                    )}
-                  </div>
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <CheckCircle className="h-6 w-6 text-kid-green mr-2" />
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {t('exercises.kpi.completed')}
+                  </span>
+                </div>
+                <div className="text-3xl font-bold text-kid-green">{completed}</div>
+              </CardContent>
+            </Card>
 
-                  {exercise.completedAt && (
-                    <p className="text-xs text-muted-foreground text-center">
-                      {t('exercisesPage.exercise.completedOn', { date: new Date(exercise.completedAt).toLocaleDateString() })}
-                    </p>
-                  )}
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Trophy className="h-6 w-6 text-kid-yellow mr-2" />
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {t('exercises.kpi.accuracy')}
+                  </span>
+                </div>
+                <div className="text-3xl font-bold text-kid-yellow">
+                  {averageAccuracy.toFixed(1)}%
                 </div>
               </CardContent>
             </Card>
-          ))}
+          </div>
+
+          {/* Filtros */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder={t('exercises.filters.search')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <select
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              className="px-3 py-2 border border-input rounded-md bg-background text-sm"
+            >
+              <option value="all">{t('exercises.filters.subject')}</option>
+              {subjects.filter(s => s !== 'all').map(subject => (
+                <option key={subject} value={subject}>
+                  {t(`subjects.${subject}`)}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={selectedDifficulty}
+              onChange={(e) => setSelectedDifficulty(e.target.value)}
+              className="px-3 py-2 border border-input rounded-md bg-background text-sm"
+            >
+              <option value="all">{t('exercises.filters.difficulty')}</option>
+              {difficulties.filter(d => d !== 'all').map(difficulty => (
+                <option key={difficulty} value={difficulty}>
+                  {t(`exercisesPage.difficulty.${difficulty}`)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Lista de Exercícios */}
+          {exercises.length === 0 ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-muted-foreground mb-2">
+                  {t('exercises.empty')}
+                </h3>
+                <p className="text-muted-foreground">
+                  Tente ajustar os filtros ou buscar por outros termos.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {exercises.map((exercise) => (
+                <Card 
+                  key={exercise.id} 
+                  className="hover:shadow-lg transition-all duration-200 cursor-pointer"
+                  onClick={() => handleStartExercise(exercise)}
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2">
+                        {subjectIcons[exercise.subject || ''] || <BookOpen className="h-5 w-5" />}
+                        <Badge 
+                          variant="outline" 
+                          className={subjectColors[exercise.subject || ''] || "bg-gray-100 text-gray-800 border-gray-200"}
+                        >
+                          {t(`subjects.${exercise.subject}`)}
+                        </Badge>
+                      </div>
+                      <Badge 
+                        variant="outline" 
+                        className={difficultyColors[exercise.difficulty || 'medium']}
+                      >
+                        {t(`exercisesPage.difficulty.${exercise.difficulty || 'medium'}`)}
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-lg leading-tight">
+                      {exercise.title}
+                    </CardTitle>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      {exercise.questionCount && (
+                        <span className="flex items-center gap-1">
+                          <Target className="h-4 w-4" />
+                          {t('exercises.card.questions', { count: exercise.questionCount })}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Badges informativos */}
+                    <div className="flex flex-wrap gap-2">
+                      {exercise.isTimed && (
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          <Timer className="h-3 w-3 mr-1" />
+                          {t('exercises.card.timed')}
+                          {exercise.timeLimitSec && (
+                            <span className="ml-1">
+                              ({formatTime(exercise.timeLimitSec)})
+                            </span>
+                          )}
+                        </Badge>
+                      )}
+                      
+                      {exercise.isAutoGraded && (
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">
+                          <Zap className="h-3 w-3 mr-1" />
+                          {t('exercises.card.auto')}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Progresso ou Score */}
+                    {exercise.status === 'completed' && exercise.score !== null && exercise.maxScore && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Score:</span>
+                        <span className="font-semibold text-kid-green">
+                          {exercise.score}/{exercise.maxScore}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Botão de ação */}
+                    <Button 
+                      className="w-full" 
+                      variant={exercise.status === 'completed' ? 'outline' : 'default'}
+                    >
+                      {exercise.status === 'completed' ? 'Ver Resultado' : 'Iniciar'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
-
-        {filteredExercises.length === 0 && (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{t('exercisesPage.noResults.title')}</h3>
-              <p className="text-muted-foreground">
-                {t('exercisesPage.noResults.description')}
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Motivational Message */}
-        {averagePercentage >= 70 && completedExercises.length > 0 && (
-          <Card className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-            <CardContent className="p-6 text-center">
-              <Trophy className="h-12 w-12 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">
-                {t('exercisesPage.motivation.congratulations', { percentage: averagePercentage })}
-              </h3>
-              <p className="opacity-90">
-                {t('exercisesPage.motivation.continue')}
-              </p>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </AppLayout>
   );

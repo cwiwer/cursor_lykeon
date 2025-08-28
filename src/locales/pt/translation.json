@@ -25,10 +25,32 @@
   },
 
   "exercises": "Exercícios",
+  "exercises": {
+    "title": "Exercícios",
+    "subtitle": "Pratique e avance no seu ritmo.",
+    "filters": {
+      "search": "Buscar",
+      "subject": "Matéria",
+      "grade": "Série",
+      "difficulty": "Dificuldade"
+    },
+    "kpi": {
+      "total": "Total",
+      "completed": "Concluídos",
+      "accuracy": "Taxa de acerto"
+    },
+    "card": {
+      "timed": "Temporizado",
+      "auto": "Correção automática",
+      "questions": "{{count}} questões"
+    },
+    "empty": "Nenhum exercício encontrado.",
+    "error": "Não foi possível carregar os exercícios."
+  },
   "exercisesPage": {
     "title": "Lista de Exercícios",
     "subtitle": "Pratique e reforce seu aprendizado",
-    "viewAllQuizzes": "Ver Todos os Quizzes",
+
     "stats": {
       "totalExercises": "Total de exercícios",
       "completed": "Concluídos",
@@ -39,13 +61,7 @@
       "placeholder": "Buscar exercícios...",
       "allSubjects": "Todas as matérias"
     },
-    "quizzes": {
-      "title": "Quizzes Disponíveis",
-      "subtitle": "Teste seus conhecimentos em diferentes matérias",
-      "mathematics": "Matemática",
-      "language": "Língua",
-      "sciences": "Ciências"
-    },
+
     "difficulty": {
       "easy": "Fácil",
       "medium": "Médio",
@@ -64,7 +80,7 @@
     "actions": {
       "viewResult": "Ver resultado",
       "redo": "Refazer",
-      "startQuiz": "Iniciar Quiz",
+  
       "submitWork": "Enviar Trabalho",
       "upload": "Upload"
     },
@@ -321,11 +337,10 @@
   },
   "quiz": {
     "title": "Quizzes",
-    "start": "Iniciar Quiz",
+    "start": "Iniciar",
     "finish": "Finalizar",
     "score": "Você acertou {{correct}} de {{total}}",
-    "xpEarned": "Você ganhou {{points}} XP!",
-    "quizzes": "Quizzes"
+    "xpEarned": "Você ganhou {{points}} XP!"
   },
   "calendar": {
     "title": "Meu Calendário",
@@ -502,7 +517,7 @@
     "manageChild": "Gerenciar {{name}}",
     "kpis": {
       "attendance": "Presença",
-      "quizzes": "Quizzes",
+  
       "hoursPerWeek": "⏰ Horas/sem"
     },
     "alerts": {
@@ -515,10 +530,7 @@
     },
     "activities": {
       "title": "🎯 Atividades",
-      "quizzes": {
-        "title": "Quizzes",
-        "description": "Teste os conhecimentos dos seus filhos"
-      },
+
       "calendar": {
         "title": "Calendário",
         "description": "Acompanhe a agenda escolar"
@@ -539,7 +551,7 @@
     "calendar": "📅 Calendário",
     "kpis": {
       "attendance": "📊 Presença",
-      "quizCorrect": "Quizzes corretos",
+
       "hoursPerWeek": "⏰ Horas/semana"
     },
     "comingSoon": "Em breve",
