@@ -68,27 +68,37 @@ export default function Notificacoes() {
   return (
     <AppLayout>
       <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Bell className="w-8 h-8 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold">{t('notifications')}</h1>
-              <p className="text-muted-foreground">{unreadCount} {t('unread')}</p>
+        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                  <Bell className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                    {t('notifications')}
+                  </h1>
+                  <p className="text-lg text-kid-green mt-1">
+                    {t('exercisesPage.notifications.unread', { count: unreadCount })}
+                  </p>
+                </div>
+              </div>
+              <Button onClick={handleReadAll} variant="outline" className="gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                {t('exercisesPage.notifications.markAllAsRead')}
+              </Button>
             </div>
-          </div>
-          <Button onClick={handleReadAll} variant="outline" className="gap-2">
-            <CheckCircle2 className="w-4 h-4" />
-            {t('markAllAsRead')}
-          </Button>
-        </div>
+          </CardContent>
+        </Card>
 
         <div className="flex gap-2 flex-wrap">
           {[
-            { key: 'all', label: t('all') },
-            { key: 'unread', label: t('unread') },
-            { key: 'system', label: t('system') },
-            { key: 'lessons', label: t('lessons') },
-            { key: 'achievements', label: t('achievements') }
+            { key: 'all', label: t('exercisesPage.notifications.all') },
+            { key: 'unread', label: t('exercisesPage.notifications.unread', { count: 0 }) },
+            { key: 'system', label: t('exercisesPage.notifications.system') },
+            { key: 'lessons', label: t('exercisesPage.notifications.lessons') },
+            { key: 'achievements', label: t('exercisesPage.notifications.achievements') }
           ].map(filterOption => (
             <Button
               key={filterOption.key}
@@ -105,9 +115,9 @@ export default function Notificacoes() {
           <Card>
             <CardContent className="p-12 text-center">
               <Bell className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">{t('noNotifications')}</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('exercisesPage.notifications.noNotifications')}</h3>
               <p className="text-muted-foreground">
-                {filter === 'unread' ? 'Todas as notificações foram lidas' : t('noNotificationsDesc')}
+                {filter === 'unread' ? t('exercisesPage.notifications.allNotificationsRead') : t('noNotificationsDesc')}
               </p>
             </CardContent>
           </Card>
@@ -129,11 +139,11 @@ export default function Notificacoes() {
                       )}
                       <div className="flex items-center gap-2 mt-2">
                         <Badge variant="secondary" className="text-xs">
-                          {notification.type_key === 'lesson_reminder' && t('lesson_reminder')}
-                          {notification.type_key === 'makeup_class' && t('makeup_class')}
-                          {notification.type_key === 'report_ready' && t('report_ready')}
-                          {notification.type_key === 'achievement' && t('achievement')}
-                          {notification.type_key === 'system' && t('system')}
+                          {notification.type_key === 'lesson_reminder' && t('exercisesPage.notifications.lesson_reminder')}
+                          {notification.type_key === 'makeup_class' && t('exercisesPage.notifications.makeup_class')}
+                          {notification.type_key === 'report_ready' && t('exercisesPage.notifications.report_ready')}
+                          {notification.type_key === 'achievement' && t('exercisesPage.notifications.achievement')}
+                          {notification.type_key === 'system' && t('exercisesPage.notifications.system')}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
                           {new Date(notification.delivered_at).toLocaleString('pt-BR')}
@@ -148,7 +158,7 @@ export default function Notificacoes() {
                         className="gap-1"
                       >
                         <Check className="w-3 h-3" />
-                        {t('markAsRead')}
+                        {t('exercisesPage.notifications.markAsRead')}
                       </Button>
                     )}
                   </div>

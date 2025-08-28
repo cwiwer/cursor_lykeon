@@ -417,17 +417,7 @@ const mockClasses: Record<string, ClassEvent[]> = {
 
 // weekDays agora é definido dinamicamente usando getWeekDays(locale, 0)
 
-// Subject mapping for SubjectsRow
-const SUBJECTS = {
-  'Matemática': { name: 'Matemática', icon: '📐' },
-  'Português': { name: 'Português', icon: '📖' },
-  'Ciências': { name: 'Ciências', icon: '🌌' },
-  'História': { name: 'História', icon: '🏛️' },
-  'Geografia': { name: 'Geografia', icon: '🗺️' },
-  'Arte': { name: 'Arte', icon: '🎨' },
-  'Inglês': { name: 'Inglês', icon: '🇺🇸' },
-  'Educação Física': { name: 'Ed. Física', icon: '⚽' }
-};
+// Subject mapping for SubjectsRow - será definido dentro da função
 
 const COLORS = {
   'Matemática': 'bg-kid-green/20 text-kid-green border-kid-green/30',
@@ -440,57 +430,7 @@ const COLORS = {
   'Educação Física': 'bg-kid-blue/15 text-kid-blue border-kid-blue/25'
 };
 
-// SubjectsRow Component
-function SubjectsRow({ schedule }: { schedule: ClassEvent[] }) {
-  // Count blocks per subject (excluding intervals)
-  const counts = schedule
-    .filter(event => !event.isInterval)
-    .reduce((acc, event) => {
-      // Usar subject ou title dependendo da fonte dos dados
-      const subjectName = event.subject || event.title;
-      if (subjectName) {
-        acc[subjectName] = (acc[subjectName] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>);
-
-  const subjectsWithClasses = Object.keys(counts);
-
-  if (subjectsWithClasses.length === 0) {
-    return (
-      <div className="bg-white/90 backdrop-blur-sm border border-kid-green/20 rounded-xl p-4 mb-4 shadow-sm">
-        <div className="font-bold text-kid-green mb-2">Matérias de Hoje</div>
-        <div className="text-xs text-slate-500">Nenhuma aula programada para hoje.</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white/90 backdrop-blur-sm border border-kid-green/20 rounded-xl p-4 mb-4 shadow-sm">
-      <div className="font-bold text-kid-green mb-3">Matérias de Hoje</div>
-      <div className="flex flex-wrap gap-2">
-        {subjectsWithClasses.map((key) => {
-          const subject = SUBJECTS[key];
-          const fallbackColor = 'bg-gray-100 text-gray-700 border-gray-300';
-          
-          return (
-            <span
-              key={key}
-              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${subject ? COLORS[key] : fallbackColor} font-semibold whitespace-nowrap`}
-              aria-label={`${subject?.name || key} — ${counts[key] ?? 0} bloco(s) hoje`}
-              title={`${subject?.name || key} — ${counts[key] ?? 0} bloco(s) hoje`}
-            >
-              <span className="text-base leading-none">{subject?.icon || '📚'}</span>
-              {subject?.name || key}
-              <span className="text-xs font-bold opacity-80">· {counts[key] ?? 0}</span>
-            </span>
-          );
-        })}
-      </div>
-      <div className="text-xs text-slate-500 mt-1">A sequência é fixa — o aluno segue a trilha do dia sem reordenar.</div>
-    </div>
-  );
-}
+// SubjectsRow Component - será definido dentro da função principal
 
 
 
@@ -529,7 +469,7 @@ export default function Calendario() {
       const newEditableWeek: Record<string, any[]> = {};
       const newOriginalWeekData: Record<string, any[]> = {};
       
-      console.log('Ativando modo de edição, weekSchedule:', !!weekSchedule);
+      console.log(t('calendar.activatingEditMode'), !!weekSchedule);
       
       if (weekSchedule) {
         // Usar dados do weekSchedule
@@ -537,7 +477,7 @@ export default function Calendario() {
           const classes = day.slots.filter(s => s.type === 'class');
           newEditableWeek[day.dateISO] = classes;
           newOriginalWeekData[day.dateISO] = [...classes]; // Cópia profunda
-          console.log(`Dia ${day.dateISO}: ${classes.length} aulas`);
+          console.log(t('calendar.dayClassesCount', { date: day.dateISO, count: classes.length }));
         });
       } else {
         // Usar dados mockados
@@ -548,11 +488,11 @@ export default function Calendario() {
           const classes = weekClasses[dayKey] || [];
           newEditableWeek[dateISO] = classes;
           newOriginalWeekData[dateISO] = [...classes]; // Cópia profunda
-          console.log(`Dia ${dateISO} (${dayKey}): ${classes.length} aulas`);
+          console.log(t('calendar.dayClassesCount', { date: dateISO, count: classes.length }));
         });
       }
       
-      console.log('EditableWeek criado:', newEditableWeek);
+      console.log(t('calendar.editableWeekCreated'), newEditableWeek);
       setEditableWeek(newEditableWeek);
       setOriginalWeekData(newOriginalWeekData);
     } else {
@@ -566,7 +506,7 @@ export default function Calendario() {
       
       if (hasChanges) {
         // Mostrar confirmação para aplicar mudanças
-        if (window.confirm('Deseja aplicar as mudanças feitas na edição?')) {
+        if (window.confirm(t('calendar.confirmApplyChanges'))) {
           // Aplicar mudanças permanentemente
           if (weekSchedule) {
             // Atualizar weekSchedule com as mudanças
@@ -608,12 +548,12 @@ export default function Calendario() {
             });
             setWeekClasses(updatedWeekClasses);
           }
-          console.log('Mudanças aplicadas permanentemente');
-        } else {
-          // Descartar mudanças - restaurar dados originais
-          setEditableWeek(originalWeekData);
-          console.log('Mudanças descartadas');
-        }
+                  console.log(t('calendar.changesApplied'));
+      } else {
+        // Descartar mudanças - restaurar dados originais
+        setEditableWeek(originalWeekData);
+        console.log(t('calendar.changesDiscarded'));
+      }
       }
     }
     setEditMode(!editMode);
@@ -635,16 +575,16 @@ export default function Calendario() {
 
   // Debug simples
   useEffect(() => {
-    console.log('Calendario: activeChild =', !!activeChild);
+    console.log(t('calendar.debug.activeChild'), !!activeChild);
   }, [activeChild]);
 
   // Gerar grade semanal quando a semana mudar
   useEffect(() => {
-    console.log('useEffect [weekStart, activeChild?.id] executado:', { weekStart, activeChildId: activeChild?.id });
+    console.log(t('calendar.debug.useEffectExecuted'), { weekStart, activeChildId: activeChild?.id });
     refreshWeekSchedule();
   }, [weekStart, activeChild?.id]);
 
-  console.log('Calendario: Componente carregado, activeChild:', !!activeChild);
+  console.log(t('calendar.debug.componentLoaded'), !!activeChild);
 
   // Função para gerar/atualizar a grade semanal
   const refreshWeekSchedule = () => {
@@ -652,13 +592,13 @@ export default function Calendario() {
       setScheduleError(null);
 
       if (!activeChild?.id) {
-        setScheduleError(t('calendar.noActiveStudent', 'Nenhum aluno ativo'));
+        setScheduleError(t('calendar.noActiveStudent'));
         return;
       }
 
       const weekStartISO = toISODateLocal(weekStart);
 
-      console.log('Gerando grade para:', {
+      console.log(t('calendar.debug.generatingSchedule'), {
         childId: activeChild.id,
         weekStartISO,
         locale: locale.split('-')[0]
@@ -671,11 +611,11 @@ export default function Calendario() {
         locale: locale.split('-')[0] // pt-BR -> pt
       });
 
-      console.log('Grade gerada:', schedule);
+      console.log(t('calendar.debug.scheduleGenerated'), schedule);
       setWeekSchedule(schedule);
     } catch (error) {
-      console.error('Erro ao gerar grade semanal:', error);
-      setScheduleError(error instanceof Error ? error.message : 'Erro desconhecido');
+      console.error(t('calendar.error.generatingSchedule'), error);
+              setScheduleError(error instanceof Error ? error.message : t('calendar.error.unknownError'));
       setWeekSchedule(null);
     }
   };
@@ -727,13 +667,77 @@ export default function Calendario() {
 
   const getStatusText = (status: ClassEvent['status']) => {
     switch (status) {
-      case 'completed': return 'Concluída';
-      case 'no_show': return 'Reposição agendada';
-      case 'prepare': return 'Prepare-se';
-      case 'time_to_start': return 'Hora de começar';
-      case 'upcoming': return 'Próxima';
-      default: return 'Agendada';
+      case 'completed': return t('calendar.status.completed');
+      case 'no_show': return t('calendar.status.noShow');
+      case 'prepare': return t('calendar.status.prepare');
+      case 'time_to_start': return t('calendar.status.timeToStart');
+      case 'upcoming': return t('calendar.status.upcoming');
+      default: return t('calendar.scheduled');
     }
+  };
+
+  // SubjectsRow Component
+  const SubjectsRow = ({ schedule }: { schedule: ClassEvent[] }) => {
+    // Subject mapping for SubjectsRow
+    const SUBJECTS = {
+      'Matemática': { name: t('subjects.math'), icon: '📐' },
+      'Português': { name: t('subjects.portuguese'), icon: '📖' },
+      'Ciências': { name: t('subjects.science'), icon: '🌌' },
+      'História': { name: t('subjects.history'), icon: '🏛️' },
+      'Geografia': { name: t('subjects.geography'), icon: '🗺️' },
+      'Arte': { name: t('subjects.arts'), icon: '🎨' },
+      'Inglês': { name: t('subjects.english'), icon: '🇺🇸' },
+      'Educação Física': { name: t('subjects.physicalEducation'), icon: '⚽' }
+    };
+    
+    // Count blocks per subject (excluding intervals)
+    const counts = schedule
+      .filter(event => !event.isInterval)
+      .reduce((acc, event) => {
+        // Usar subject ou title dependendo da fonte dos dados
+        const subjectName = event.subject || event.title;
+        if (subjectName) {
+          acc[subjectName] = (acc[subjectName] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>);
+
+    const subjectsWithClasses = Object.keys(counts);
+
+    if (subjectsWithClasses.length === 0) {
+      return (
+        <div className="bg-white/90 backdrop-blur-sm border border-kid-green/20 rounded-xl p-4 mb-4 shadow-sm">
+          <div className="font-bold text-kid-green mb-2">{t('calendar.todaySubjects')}</div>
+          <div className="text-xs text-slate-500">{t('calendar.noClasses')}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="bg-white/90 backdrop-blur-sm border border-kid-green/20 rounded-xl p-4 mb-4 shadow-sm">
+        <div className="font-bold text-kid-green mb-3">{t('calendar.todaySubjects')}</div>
+        <div className="flex flex-wrap gap-2">
+          {subjectsWithClasses.map((key) => {
+            const subject = SUBJECTS[key];
+            const fallbackColor = 'bg-gray-100 text-gray-700 border-gray-300';
+            
+            return (
+              <span
+                key={key}
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${subject ? COLORS[key] : fallbackColor} font-semibold whitespace-nowrap`}
+                aria-label={`${subject?.name || key} — ${counts[key] ?? 0} bloco(s) hoje`}
+                title={`${subject?.name || key} — ${counts[key] ?? 0} bloco(s) hoje`}
+              >
+                <span className="text-base leading-none">{subject?.icon || '📚'}</span>
+                {subject?.name || key}
+                <span className="text-xs font-bold opacity-80">· {counts[key] ?? 0}</span>
+              </span>
+            );
+          })}
+        </div>
+        <div className="text-xs text-slate-500 mt-1">{t('calendar.sequenceNote')}</div>
+      </div>
+    );
   };
 
   const handleStartLesson = (lessonId: string) => {
@@ -803,22 +807,22 @@ export default function Calendario() {
   if (editMode && editableWeek[todayISO]) {
     // Modo de edição ativo - usar dados editáveis
     todayClasses = editableWeek[todayISO] || [];
-    console.log('Usando editableWeek para hoje:', todayClasses.length, 'aulas');
+    console.log(t('calendar.debug.usingEditableWeek'), todayClasses.length, t('calendar.lessonsPlanned'));
   } else if (weekSchedule) {
     // Usar dados do weekSchedule gerado
     const todaySchedule = weekSchedule.days.find(d => d.dateISO === todayISO);
     if (todaySchedule) {
       todayClasses = todaySchedule.slots.filter(s => s.type === 'class');
-      console.log('Usando weekSchedule para hoje:', todayClasses.length, 'aulas');
+      console.log(t('calendar.debug.usingWeekSchedule'), todayClasses.length, t('calendar.lessonsPlanned'));
     }
   } else {
     // Fallback para dados mockados
     todayClasses = weekClasses[todayDayKey] || [];
-    console.log('Usando weekClasses para hoje:', todayClasses.length, 'aulas');
+    console.log(t('calendar.debug.usingWeekClasses'), todayClasses.length, t('calendar.lessonsPlanned'));
   }
   
   // Debug logs
-  console.log('Debug today:', {
+  console.log(t('calendar.debug.debugToday'), {
     todayDayIndex,
     todayDayShort,
     todayDayKey,
@@ -864,7 +868,7 @@ export default function Calendario() {
 
   // Fallback se não houver aluno ativo
   if (!activeChild) {
-    console.log('Calendario: Renderizando fallback - nenhum aluno ativo');
+    console.log(t('calendar.debug.renderingFallback'));
     
     // Se ainda está carregando, mostrar loading
     if (isLoading) {
@@ -873,8 +877,8 @@ export default function Calendario() {
           <div className="p-6">
             <div className="text-center py-12">
               <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">Carregando...</h1>
-              <p className="text-gray-600 mb-6">Buscando informações do aluno</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('common.loading')}</h1>
+              <p className="text-gray-600 mb-6">{t('calendar.loadingStudentInfo')}</p>
             </div>
           </div>
         </AppLayout>
@@ -883,15 +887,15 @@ export default function Calendario() {
     
     // Se não está carregando e não há crianças, redirecionar para selecionar aluno
     if (children.length === 0) {
-      console.log('Calendario: Nenhuma criança encontrada, redirecionando para selecionar-aluno');
+      console.log(t('calendar.debug.redirectingNoChildren'));
       // Usar setTimeout para evitar erro de renderização durante navegação
       setTimeout(() => navigate('/selecionar-aluno'), 0);
       return (
         <AppLayout>
           <div className="p-6">
             <div className="text-center py-12">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">Redirecionando...</h1>
-              <p className="text-gray-600 mb-6">Nenhuma criança cadastrada</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('common.redirecting')}</h1>
+              <p className="text-gray-600 mb-6">{t('calendar.noChildrenRegistered')}</p>
             </div>
           </div>
         </AppLayout>
@@ -903,13 +907,13 @@ export default function Calendario() {
       <AppLayout>
         <div className="p-6">
           <div className="text-center py-12">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Calendário</h1>
-            <p className="text-gray-600 mb-6">{t('calendar.noStudentSelected', 'Nenhum aluno selecionado')}</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('calendar.title')}</h1>
+            <p className="text-gray-600 mb-6">{t('calendar.noStudentSelected')}</p>
             <Button onClick={() => navigate('/selecionar-aluno')}>
-              {t('calendar.selectStudent', 'Selecionar Aluno')}
+              {t('calendar.selectStudent')}
             </Button>
             <div className="mt-4 text-sm text-gray-500">
-              Debug: activeChild = {JSON.stringify(activeChild)}, children = {children.length}
+              {t('calendar.debugInfo')} activeChild = {JSON.stringify(activeChild)}, children = {children.length}
             </div>
             </div>
         </div>
@@ -948,47 +952,49 @@ export default function Calendario() {
     );
   }
 
-  console.log('Calendario: Renderizando conteúdo principal');
+  console.log(t('calendar.debug.renderingMainContent'));
 
   return (
     <AppLayout>
       <div className="bg-gradient-to-br from-kid-yellow/5 via-background to-kid-blue/5 min-h-screen">
         {/* Header */}
         <div className="p-6 pb-4">
-          <div className="flex items-center justify-between bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-kid-green/20">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-gradient-to-br from-kid-green to-kid-blue rounded-full shadow-md">
-                  <Calendar className="h-8 w-8 text-white" />
+          <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                    <Calendar className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                      {t('calendar.title')}
+                    </h1>
+                    <p className="text-lg text-kid-green mt-1">{t('calendar.subtitle')}</p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
-                    Meu Calendário
-                  </h1>
-                  <p className="text-kid-green/70 font-medium">Vamos aprender juntos hoje!</p>
+                <div className="flex items-center gap-4">
+                  <div className="text-right bg-gradient-to-br from-kid-green/20 to-kid-blue/20 p-4 rounded-xl border border-kid-green/30">
+                    <p className="text-sm text-kid-green/70 font-medium">
+                      {t('calendar.todayLabel')}, {formatDate(adjustedNow, locale, timeZone, {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-2xl font-bold text-kid-green">
+                      {formatDate(adjustedNow, locale, timeZone, {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: use12Hour
+                      })}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right bg-gradient-to-br from-kid-green/20 to-kid-blue/20 p-4 rounded-xl border border-kid-green/30">
-                <p className="text-sm text-kid-green/70 font-medium">
-                  {t('calendar.todayLabel')}, {formatDate(adjustedNow, locale, timeZone, {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-                <p className="text-2xl font-bold text-kid-green">
-                  {formatDate(adjustedNow, locale, timeZone, {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: use12Hour
-                  })}
-                </p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Student Info Card */}
@@ -1013,10 +1019,10 @@ export default function Calendario() {
                   <div className="text-right">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xs bg-slate-50 text-slate-700 border border-slate-200 px-2 py-1 rounded-full font-semibold">
-                        Pontos: —
+                        {t('calendar.points')}: —
                       </span>
                       <a href="/conquistas" className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full font-semibold">
-                        Conquistas
+                        {t('calendar.achievements')}
                       </a>
                     </div>
                   </div>
@@ -1043,11 +1049,11 @@ export default function Calendario() {
         {scheduleError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center gap-2 text-red-800">
-              <span className="text-sm font-medium">Erro na grade semanal:</span>
+              <span className="text-sm font-medium">{t('calendar.scheduleError')}</span>
               <span className="text-sm">{scheduleError}</span>
             </div>
             <div className="text-xs text-red-600 mt-1">
-              Usando dados mockados como fallback
+              {t('calendar.usingMockData')}
             </div>
           </div>
         )}
@@ -1090,7 +1096,7 @@ export default function Calendario() {
                         {t('calendar.startLesson')}
                       </Button>
                       <p className="text-sm text-kid-green/70 mt-3">
-                        {todayClasses.filter(c => !c.isInterval).length} {t('calendar.lessonsPlanned')}
+                        {t('calendar.programmedClasses', { count: todayClasses.filter(c => !c.isInterval).length })}
                       </p>
                     </div>
                   </div>
@@ -1210,7 +1216,7 @@ export default function Calendario() {
                           {t('calendar.startLesson')}
                         </Button>
                         <p className="text-sm text-kid-green/70 mt-3">
-                          {todayClasses.filter(c => !c.isInterval).length} {t('calendar.lessonsPlanned')}
+                          {t('calendar.programmedClasses', { count: todayClasses.filter(c => !c.isInterval).length })}
                         </p>
                       </div>
                     </div>
@@ -1441,7 +1447,7 @@ export default function Calendario() {
                         )}
                         {hasClasses && (
                           <div className="mt-1 text-xs text-muted-foreground">
-                            📋 {dayClasses.length} aula{dayClasses.length !== 1 ? 's' : ''}
+                            📋 {t('calendar.programmedClasses', { count: dayClasses.length })}
                           </div>
                         )}
                       </div>
@@ -1479,7 +1485,7 @@ export default function Calendario() {
                                       ? 'bg-green-100 text-green-700 border-green-200'
                                       : getStatusColor(classEvent.status)
                                   }`}>
-                                    {isGeneratedSchedule ? 'Aula' : getStatusText(classEvent.status)}
+                                    {isGeneratedSchedule ? t('calendar.class') : getStatusText(classEvent.status)}
                                   </Badge>
                                 </div>
                               </div>
@@ -1501,7 +1507,7 @@ export default function Calendario() {
                     console.error('Erro ao renderizar dia:', error, { day, index });
                     return (
                       <div key={`error-${index}`} className="p-3 text-red-500 text-xs">
-                        Erro ao renderizar
+                        {t('calendar.renderError')}
                       </div>
                     );
                   }
@@ -1575,7 +1581,7 @@ export default function Calendario() {
               </div>
               <div>
                 <p className="text-2xl font-bold">8</p>
-                <p className="text-sm text-muted-foreground">Aulas concluídas esta semana</p>
+                <p className="text-sm text-muted-foreground">{t('calendar.stats.completedThisWeek')}</p>
               </div>
             </div>
           </Card>
@@ -1587,7 +1593,7 @@ export default function Calendario() {
               </div>
               <div>
                 <p className="text-2xl font-bold">4</p>
-                <p className="text-sm text-muted-foreground">Aulas restantes</p>
+                <p className="text-sm text-muted-foreground">{t('calendar.stats.remainingClasses')}</p>
               </div>
             </div>
           </Card>
@@ -1599,7 +1605,7 @@ export default function Calendario() {
               </div>
               <div>
                 <p className="text-2xl font-bold">6</p>
-                <p className="text-sm text-muted-foreground">Professores diferentes</p>
+                <p className="text-sm text-muted-foreground">{t('calendar.stats.differentTeachers')}</p>
               </div>
             </div>
           </Card>

@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Assinaturas = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubscription = (plan: string) => {
     navigate(`/checkout?plan=${plan}`);
@@ -14,31 +16,23 @@ const Assinaturas = () => {
 
   const faqItems = [
     {
-      question: "Posso cancelar a qualquer momento?",
-      answer: "Sim, sem taxas ocultas."
+      question: t('subscription.faq.cancelQuestion'),
+      answer: t('subscription.faq.cancelAnswer')
     },
     {
-      question: "Quais formas de pagamento são aceitas?",
-      answer: "Cartão de crédito, débito e Interac."
+      question: t('subscription.faq.paymentQuestion'),
+      answer: t('subscription.faq.paymentAnswer')
     },
     {
-      question: "Posso experimentar antes?",
-      answer: "Sim, oferecemos 7 dias grátis no primeiro acesso."
+      question: t('subscription.faq.trialQuestion'),
+      answer: t('subscription.faq.trialAnswer')
     }
   ];
 
-  const mensilBenefits = [
-    "Acesso completo às aulas e calendário inteligente",
-    "Dashboard dos pais com relatórios semanais",
-    "Gamificação (XP, Lumis, conquistas)",
-    "Suporte técnico básico"
-  ];
-
+  const mensilBenefits = t('subscription.benefits.monthly', { returnObjects: true });
   const anualBenefits = [
     ...mensilBenefits,
-    "Relatórios mensais em PDF enviados por e-mail",
-    "Suporte técnico prioritário",
-    "Acesso antecipado a novos recursos"
+    ...t('subscription.benefits.annual', { returnObjects: true })
   ];
 
   return (
@@ -48,10 +42,10 @@ const Assinaturas = () => {
           {/* Header Section */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
-              Assine a Lykeon e desbloqueie o futuro da educação do seu filho
+              {t('subscription.title')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Planos flexíveis, benefícios exclusivos e cancelamento fácil.
+              {t('subscription.subtitle')}
             </p>
           </div>
 
@@ -60,13 +54,13 @@ const Assinaturas = () => {
             {/* Plano Mensal */}
             <Card className="relative border-2 hover:border-kid-green/30 transition-all duration-300 hover:shadow-lg">
               <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl font-bold text-kid-green">Plano Mensal</CardTitle>
+                <CardTitle className="text-2xl font-bold text-kid-green">{t('subscription.monthlyPlan')}</CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-foreground">$14,90</span>
-                  <span className="text-muted-foreground"> CAD/mês</span>
+                  <span className="text-4xl font-bold text-foreground">{t('subscription.monthlyPrice')}</span>
+                  <span className="text-muted-foreground"> {t('subscription.monthlyUnit')}</span>
                 </div>
                 <CardDescription className="text-base mt-2">
-                  Perfeito para começar
+                  {t('subscription.monthlyDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -82,7 +76,7 @@ const Assinaturas = () => {
                   className="w-full bg-kid-green hover:bg-kid-green/90 text-white"
                   onClick={() => handleSubscription('mensal')}
                 >
-                  Assinar agora
+                  {t('subscription.signUpNow')}
                 </Button>
               </CardContent>
             </Card>
@@ -91,23 +85,23 @@ const Assinaturas = () => {
             <Card className="relative border-2 border-kid-orange hover:border-kid-orange/50 transition-all duration-300 hover:shadow-xl shadow-kid-orange/10">
               <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-kid-orange text-white px-6 py-1">
                 <Lightbulb className="h-4 w-4 mr-1" />
-                Mais popular
+                {t('subscription.mostPopular')}
               </Badge>
               <CardHeader className="text-center pb-8 pt-8">
-                <CardTitle className="text-2xl font-bold text-kid-orange flex items-center justify-center gap-2">
-                  <Crown className="h-6 w-6" />
-                  Plano Anual
-                </CardTitle>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold text-foreground">$149,00</span>
-                  <span className="text-muted-foreground"> CAD/ano</span>
-                </div>
-                <div className="text-sm text-kid-green font-medium">
-                  Economia de ~15%
-                </div>
-                <CardDescription className="text-base mt-2">
-                  Melhor valor para sua família
-                </CardDescription>
+                                  <CardTitle className="text-2xl font-bold text-kid-orange flex items-center justify-center gap-2">
+                    <Crown className="h-6 w-6" />
+                    {t('subscription.annualPlan')}
+                  </CardTitle>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-foreground">{t('subscription.annualPrice')}</span>
+                    <span className="text-muted-foreground"> {t('subscription.annualUnit')}</span>
+                  </div>
+                  <div className="text-sm text-kid-green font-medium">
+                    {t('subscription.savings')}
+                  </div>
+                  <CardDescription className="text-base mt-2">
+                    {t('subscription.annualDescription')}
+                  </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <ul className="space-y-3">
@@ -124,7 +118,7 @@ const Assinaturas = () => {
                   className="w-full bg-kid-orange hover:bg-kid-orange/90 text-white"
                   onClick={() => handleSubscription('anual')}
                 >
-                  Assinar agora
+                  {t('subscription.signUpNow')}
                 </Button>
               </CardContent>
             </Card>
@@ -133,7 +127,7 @@ const Assinaturas = () => {
           {/* FAQ Section */}
           <div className="max-w-4xl mx-auto mb-16">
             <h2 className="text-3xl font-bold text-center mb-8 text-kid-green">
-              Perguntas Frequentes
+              {t('subscription.faqTitle')}
             </h2>
             <div className="grid gap-4">
               {faqItems.map((item, index) => (
@@ -150,7 +144,7 @@ const Assinaturas = () => {
           {/* Trust Footer */}
           <div className="text-center py-8 border-t border-kid-green/20">
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Sua assinatura ajuda a Lykeon a continuar transformando a educação. Obrigado pela confiança!
+              {t('subscription.trustFooter')}
             </p>
           </div>
         </div>

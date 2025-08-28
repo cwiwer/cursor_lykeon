@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AppLayout } from '@/components/Layout/AppLayout';
 import { useStudent } from '@/contexts/StudentContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,6 +32,7 @@ interface Student {
 }
 
 export default function DashboardAluno() {
+  const { t } = useTranslation();
   const { children, activeChild, loading } = useStudent();
   const [students, setStudents] = useState<Student[]>([]);
   const [loadingData, setLoadingData] = useState(false);
@@ -62,13 +64,13 @@ export default function DashboardAluno() {
       <AppLayout>
         <div className="p-6 text-center">
           <div className="max-w-md mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Bem-vindo à Lykeon!</h1>
+            <h1 className="text-2xl font-bold mb-4">{t('dashboard.welcome_to_lykeon')}</h1>
             <p className="text-muted-foreground mb-6">
-              Cadastre uma criança para começar o aprendizado.
+              {t('dashboard.register_child_message')}
             </p>
             <Link to="/selecionar-aluno">
               <Button className="bg-primary text-primary-foreground">
-                Cadastrar Criança
+                {t('dashboard.register_child')}
               </Button>
             </Link>
           </div>
@@ -81,30 +83,34 @@ export default function DashboardAluno() {
     <AppLayout>
       <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-kid-green via-kid-blue to-kid-yellow/80 text-white rounded-3xl p-8 shadow-xl border-2 border-kid-green/20">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-white/20 rounded-full">
-              <Star className="h-8 w-8 text-white" />
+        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                  <Star className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                    {t('dashboard.hello', { name: activeChild ? activeChild.first_name : '' })}
+                  </h1>
+                  <p className="text-lg text-kid-green mt-1">
+                    {activeChild 
+                      ? t('dashboard.continue_learning')
+                      : t('dashboard.select_student')
+                    }
+                  </p>
+                </div>
+              </div>
+              <Link to="/calendario">
+                <Button className="bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-blue hover:to-kid-green text-white rounded-full px-6 py-3 font-bold shadow-md hover:scale-105 transition-all duration-200">
+                  <Calendar className="h-5 w-5 mr-2" />
+                  {t('dashboard.view_calendar')}
+                </Button>
+              </Link>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold drop-shadow-md">
-                Olá{activeChild ? `, ${activeChild.first_name}` : ''}!
-              </h1>
-              <p className="text-xl opacity-90 font-medium">
-                {activeChild 
-                  ? 'Vamos continuar o aprendizado!' 
-                  : 'Selecione um aluno para começar'
-                }
-              </p>
-            </div>
-          </div>
-          <Link to="/calendario">
-            <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 rounded-full px-6 py-3 font-bold shadow-md hover:scale-105 transition-all duration-200">
-              <Calendar className="h-5 w-5 mr-2" />
-              Ver Calendário
-            </Button>
-          </Link>
-        </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Continue de onde parei */}
@@ -114,12 +120,12 @@ export default function DashboardAluno() {
                 <div className="p-2 bg-gradient-to-br from-kid-green to-kid-blue rounded-full">
                   <BookOpen className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-kid-green font-bold">Continuar Aprendendo!</span>
+                <span className="text-kid-green font-bold">{t('dashboard.continue_learning_title')}</span>
               </CardTitle>
               <CardDescription className="text-kid-green/70 font-medium">
                 {activeChild 
-                  ? `Continue os estudos, ${activeChild.first_name}!`
-                  : 'Selecione um aluno para continuar'
+                  ? t('dashboard.continue_studies', { name: activeChild.first_name })
+                  : t('dashboard.select_student')
                 }
               </CardDescription>
             </CardHeader>
@@ -127,23 +133,23 @@ export default function DashboardAluno() {
               {activeChild ? (
                 <div className="space-y-4">
                   <div className="p-4 bg-gradient-to-r from-kid-green/20 to-kid-blue/20 rounded-xl border border-kid-green/30">
-                    <p className="font-bold text-kid-green">Progresso Geral</p>
-                    <p className="text-sm text-kid-green/70 font-medium">Em desenvolvimento</p>
+                    <p className="font-bold text-kid-green">{t('dashboard.general_progress')}</p>
+                    <p className="text-sm text-kid-green/70 font-medium">{t('dashboard.in_development')}</p>
                     <div className="w-full bg-white/70 rounded-full h-3 mt-3 overflow-hidden">
                       <div className="bg-gradient-to-r from-kid-green to-kid-blue h-3 rounded-full" style={{ width: '0%' }}></div>
                     </div>
                   </div>
                   <Link to="/calendario">
                     <Button className="w-full bg-gradient-to-r from-kid-green to-kid-blue hover:from-kid-blue hover:to-kid-green text-white font-bold py-3 rounded-full shadow-md hover:scale-105 transition-all duration-200">
-                      Ver Calendário
+                      {t('dashboard.view_calendar')}
                     </Button>
                   </Link>
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-muted-foreground mb-4">Nenhum aluno selecionado</p>
+                  <p className="text-muted-foreground mb-4">{t('dashboard.no_student_selected')}</p>
                   <Link to="/selecionar-aluno">
-                    <Button>Selecionar Aluno</Button>
+                    <Button>{t('dashboard.select_student')}</Button>
                   </Link>
                 </div>
               )}
@@ -157,22 +163,22 @@ export default function DashboardAluno() {
                 <div className="p-2 bg-gradient-to-br from-kid-blue to-kid-yellow rounded-full">
                   <Clock className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-kid-blue font-bold">Próxima Aula</span>
+                <span className="text-kid-blue font-bold">{t('dashboard.next_class')}</span>
               </CardTitle>
               <CardDescription className="text-kid-blue/70 font-medium">
-                Sua agenda de estudos
+                {t('dashboard.study_schedule')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6">
               <div className="text-center py-6">
-                <div className="text-muted-foreground mb-2">Em desenvolvimento</div>
+                <div className="text-muted-foreground mb-2">{t('dashboard.in_development')}</div>
                 <p className="text-sm text-muted-foreground">
-                  As aulas programadas aparecerão aqui
+                  {t('dashboard.scheduled_classes_message')}
                 </p>
                 <Link to="/calendario">
                   <Button variant="outline" className="mt-4">
                     <Calendar className="h-4 w-4 mr-2" />
-                    Ver Calendário
+                    {t('dashboard.view_calendar')}
                   </Button>
                 </Link>
               </div>
@@ -186,22 +192,22 @@ export default function DashboardAluno() {
                 <div className="p-2 bg-gradient-to-br from-kid-yellow to-kid-orange rounded-full">
                   <Trophy className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-kid-orange font-bold">Conquistas</span>
+                <span className="text-kid-orange font-bold">{t('dashboard.achievements')}</span>
               </CardTitle>
               <CardDescription className="text-kid-orange/70 font-medium">
-                Celebre seus sucessos!
+                {t('dashboard.celebrate_success')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6">
               <div className="text-center py-6">
-                <div className="text-muted-foreground mb-2">Em desenvolvimento</div>
+                <div className="text-muted-foreground mb-2">{t('dashboard.in_development')}</div>
                 <p className="text-sm text-muted-foreground">
-                  Suas conquistas aparecerão aqui
+                  {t('dashboard.achievements_message')}
                 </p>
                 <Link to="/conquistas">
                   <Button variant="outline" className="mt-4">
                     <Trophy className="h-4 w-4 mr-2" />
-                    Ver Conquistas
+                    {t('dashboard.view_achievements')}
                   </Button>
                 </Link>
               </div>
@@ -218,7 +224,7 @@ export default function DashboardAluno() {
               </div>
               <div>
                 <p className="text-2xl font-bold">—</p>
-                <p className="text-sm text-muted-foreground">Lições concluídas</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.lessons_completed')}</p>
               </div>
             </div>
           </Card>
@@ -230,7 +236,7 @@ export default function DashboardAluno() {
               </div>
               <div>
                 <p className="text-2xl font-bold">—</p>
-                <p className="text-sm text-muted-foreground">Tempo estudado</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.time_studied')}</p>
               </div>
             </div>
           </Card>
@@ -242,7 +248,7 @@ export default function DashboardAluno() {
               </div>
               <div>
                 <p className="text-2xl font-bold">—</p>
-                <p className="text-sm text-muted-foreground">Média de acertos</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.average_correct')}</p>
               </div>
             </div>
           </Card>
@@ -254,7 +260,7 @@ export default function DashboardAluno() {
               </div>
               <div>
                 <p className="text-2xl font-bold">—</p>
-                <p className="text-sm text-muted-foreground">Medalhas ganhas</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.medals_won')}</p>
               </div>
             </div>
           </Card>
@@ -265,21 +271,21 @@ export default function DashboardAluno() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              Explore o Lykeon
+              {t('dashboard.explore_lykeon')}
             </CardTitle>
             <CardDescription>
-              Acesse as funcionalidades da plataforma
+              {t('dashboard.access_platform')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
               <Link to="/pais/dashboard" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-4 py-2 rounded-full font-semibold transition-all duration-200 inline-flex items-center gap-2">
                 <Users className="h-4 w-4" />
-                Dashboard dos Pais
+                {t('dashboard.parents_dashboard')}
               </Link>
               <Link to="/selecionar-aluno" className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full font-semibold transition-all duration-200 inline-flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Selecionar Aluno
+                {t('dashboard.select_student')}
               </Link>
             </div>
           </CardContent>

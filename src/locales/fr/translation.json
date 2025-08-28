@@ -6,40 +6,171 @@
   "email": "Courriel",
   "password": "Mot de passe",
   "name": "Nom",
-  "calendar": "Calendrier",
-  "calendar.today": "Aujourd'hui",
-  "calendar.month.prev": "Mois précédent",
-  "calendar.month.next": "Mois prochain",
-  "calendar.todayLabel": "Aujourd'hui",
-  "calendar.thisWeek": "Cette semaine",
-  "calendar.prevWeek": "Semaine précédente",
-  "calendar.nextWeek": "Semaine prochaine",
-  "calendar.now": "Maintenant",
-  "calendar.noEvents": "Aucun événement aujourd'hui",
-  "calendar.noClasses": "Aucun cours programmé aujourd'hui. Profitez de votre repos !",
-  "calendar.availableToday": "Cours Disponibles Aujourd'hui",
-  "calendar.startLesson": "Commencer le Cours",
-  "calendar.lessonsPlanned": "cours programmé(s)",
-  "calendar.nextInterval": "Prochaine Pause",
-  "calendar.nextLesson": "Prochain Cours",
-  "calendar.weeklySchedule": "Horaire Hebdomadaire",
-  "calendar.dragInstructions": "Glissez les jours pour réorganiser",
-  "calendar.editMode": "Édition active",
-  "calendar.activateEdit": "Activer l'édition",
-  "calendar.dragInstruction": "Glissez un jour avec des cours vers un autre jour pour déplacer tous les cours en une fois",
-  "calendar.dropHere": "Déposez les cours ici",
-  "calendar.noActiveStudent": "Aucun étudiant actif",
-  "calendar.noStudentSelected": "Aucun étudiant sélectionné",
-  "calendar.selectStudent": "Sélectionner un Étudiant",
+
   "notifications": "Notifications",
-  "settings": "Paramètres",
   "achievements": "Réalisations",
   "support": "Support Technique",
-  "dashboard": "Tableau de bord",
+  "sidebar": {
+    "dashboard": "Tableau de bord",
+    "calendar": "Calendrier",
+    "subscription": "Abonnements"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "redirecting": "Redirection...",
+    "error": "Erreur",
+    "success": "Succès",
+    "warning": "Avertissement",
+    "info": "Information"
+  },
+
+
   "exercises": "Exercices",
+  "exercisesPage": {
+    "title": "Liste des Exercices",
+    "subtitle": "Pratiquez et renforcez votre apprentissage",
+    "viewAllQuizzes": "Voir Tous les Quiz",
+    "stats": {
+      "totalExercises": "Total des exercices",
+      "completed": "Terminés",
+      "averageScore": "Score moyen",
+      "pending": "En attente"
+    },
+    "search": {
+      "placeholder": "Rechercher des exercices...",
+      "allSubjects": "Toutes les matières"
+    },
+    "quizzes": {
+      "title": "Quiz Disponibles",
+      "subtitle": "Testez vos connaissances dans différentes matières",
+      "mathematics": "Mathématiques",
+      "language": "Langue",
+      "sciences": "Sciences"
+    },
+    "difficulty": {
+      "easy": "Facile",
+      "medium": "Moyen",
+      "hard": "Difficile"
+    },
+    "status": {
+      "completed": "Terminé",
+      "notStarted": "Non commencé"
+    },
+    "exercise": {
+      "maxScore": "Score maximum: {{score}}",
+      "timeLimit": "{{time}} min",
+      "scorePercentage": "{{percentage}}% de bonnes réponses",
+      "completedOn": "Terminé le {{date}}"
+    },
+    "actions": {
+      "viewResult": "Voir le résultat",
+      "redo": "Refaire",
+      "startQuiz": "Commencer le Quiz",
+      "submitWork": "Soumettre le Travail",
+      "upload": "Upload"
+    },
+    "noResults": {
+      "title": "Aucun exercice trouvé",
+      "description": "Essayez d'ajuster les filtres ou de rechercher d'autres termes."
+    },
+    "motivation": {
+      "congratulations": "Félicitations ! Vous avez obtenu {{percentage}}% de bonnes réponses aux exercices !",
+      "continue": "Continuez à pratiquer et vous deviendrez un expert dans toutes les matières !"
+    },
+    "subjects": {
+      "mathematics": "Mathématiques",
+      "sciences": "Sciences",
+      "portuguese": "Portugais",
+      "history": "Histoire"
+    },
+    "exercises": {
+      "solarSystem": "Système Solaire - Planètes",
+      "fractions": "Fractions et Décimaux",
+      "narrativeText": "Texte Narratif",
+      "industrialRevolution": "Révolution Industrielle",
+      "physicalStates": "États Physiques de la Matière",
+      "multiplication": "Multiplication et Division"
+    },
+    "reports": {
+      "title": "Rapports de Progrès",
+      "completedLessons": "Leçons Terminées",
+      "averageGrade": "Note Moyenne",
+      "scoreRange": "Score de 0-100",
+      "progressInDevelopment": "Progrès en développement",
+      "congratulations": "Félicitations, {{name}} ! Continuez comme ça !",
+      "keepStudying": "Continuez à étudier ! Nous aurons bientôt des rapports !",
+      "doingGreat": "Vous vous en sortez très bien ! Continuez comme ça !",
+      "reportsWillAppear": "Les rapports de progrès apparaîtront ici !"
+    },
+    "achievements": {
+      "title": "Succès et Gamification",
+      "subtitle": "Suivez vos progrès, accomplissez des missions et débloquez des succès !",
+      "level": "Niveau {{level}}",
+      "lumis": "Lumis",
+      "store": "Boutique (bientôt disponible)",
+      "streak": "Séquence",
+      "days": "{{count}} jours",
+      "best": "Meilleur : {{count}} jours",
+      "useProtector": "Utiliser le Protecteur ({{count}})",
+      "focusPoints": "Points de Focus",
+      "focusDescription": "Les erreurs consomment le focus mais ne bloquent pas le progrès",
+      "dailyMissions": "Missions Quotidiennes",
+      "weeklyMissions": "Missions Hebdomadaires",
+      "studentMuseum": "Musée de l'Étudiant",
+      "allCategories": "Toutes les catégories",
+      "allRarities": "Toutes les raretés",
+      "engagementMetrics": "Métriques d'Engagement",
+      "activeDaysWeek": "Jours actifs (semaine)",
+      "completedMissions": "Missions accomplies",
+      "avgXPPerDay": "XP moyen par jour",
+      "mission": {
+        "progress": "Progrès",
+        "daily": "Quotidienne",
+        "weekly": "Hebdomadaire",
+        "active": "Active",
+        "completed": "Terminée",
+        "claimed": "Réclamée",
+        "claim": "Réclamer",
+        "resetTime": "↻ {{time}}"
+      },
+      "badge": {
+        "locked": "🔒 Verrouillée",
+        "unlockedOn": "Déverrouillée le {{date}}"
+      },
+      "event": {
+        "winter2025": "❄️ Événement d'Hiver 2025",
+        "exclusiveBadges": "Débloquez des badges exclusifs jusqu'au 31/08 !",
+        "participate": "Participer"
+      }
+    },
+    "messages": {
+      "title": "Centre de Messages",
+      "inbox": "Boîte de Réception",
+      "welcome": "Bienvenue à Lykeon !",
+      "system": "Système",
+      "today": "Aujourd'hui",
+      "welcomeMessage": "Ravi de vous avoir ici ! Apprenons ensemble !",
+      "writeMessage": "Écrivez votre message à Lykeon ici..."
+    },
+    "notifications": {
+      "unread": "{{count}} non lues",
+      "markAllAsRead": "Tout marquer comme lu",
+      "all": "Toutes",
+      "system": "Système",
+      "lessons": "Leçons",
+      "achievements": "Succès",
+      "noNotifications": "Aucune notification",
+      "noNotificationsDesc": "Vous êtes à jour avec vos notifications",
+      "allNotificationsRead": "Toutes les notifications ont été lues",
+      "lesson_reminder": "Rappel de leçon",
+      "makeup_class": "Cours de rattrapage",
+      "report_ready": "Rapport prêt",
+      "achievement": "Succès",
+      "markAsRead": "Marquer comme lu"
+    }
+  },
   "reports": "Rapports",
   "messages": "Messages",
-  "subscription": "Abonnement",
   "profile": "Profil",
   "students": "Élèves",
   "classes": "Cours",
@@ -56,6 +187,12 @@
   "delete": "Supprimer",
   "create": "Créer",
   "update": "Mettre à jour",
+  "detailed": "détaillée",
+  "selectStudent": "Sélectionner l'Élève",
+  "selectStudentDescription": "Choisissez quel enfant étudie maintenant",
+  "select": "Sélectionner",
+  "active": "Actif",
+  "student": "Élève",
   "search": "Rechercher",
   "filter": "Filtrer",
   "sort": "Trier",
@@ -82,6 +219,7 @@
   "sms": "SMS",
   "quietHours": "Heures silencieuses",
   "accessibility": "Accessibilité",
+  "ux": "UX",
   "language": "Langue",
   "fontSize": "Taille de police",
   "contrast": "Contraste",
@@ -189,5 +327,258 @@
     "score": "Vous avez {{correct}} bonnes réponses sur {{total}}",
     "xpEarned": "Vous avez gagné {{points}} XP !",
     "quizzes": "Quiz"
+  },
+  "calendar": {
+    "title": "Mon Calendrier",
+    "subtitle": "Apprenons ensemble aujourd'hui!",
+    "todaySubjects": "Matières d'aujourd'hui",
+    "sequenceNote": "La séquence est fixe — l'élève suit le parcours de la journée sans réorganiser.",
+    "availableClasses": "Cours disponibles aujourd'hui",
+    "startClass": "Commencer le cours",
+    "nextClass": "Prochain cours",
+    "scheduled": "Prévu",
+    "programmedClasses": "{{count}} cours programmé(s)",
+    "noClasses": "Aucun cours programmé aujourd'hui. Profitez de votre repos !",
+    "noEvents": "Aucun événement aujourd'hui",
+    "noActiveStudent": "Aucun étudiant actif",
+    "noStudentSelected": "Aucun étudiant sélectionné",
+    "selectStudent": "Sélectionner un Étudiant",
+    "today": "Aujourd'hui",
+    "todayLabel": "Aujourd'hui",
+    "thisWeek": "Cette semaine",
+    "weeklySchedule": "Horaire Hebdomadaire",
+    "dragInstructions": "Glissez les jours pour réorganiser",
+    "editMode": "Édition active",
+    "activateEdit": "Activer l'édition",
+    "dragInstruction": "Glissez un jour avec des cours vers un autre jour pour déplacer tous les cours en une fois",
+    "dropHere": "Déposez les cours ici",
+    "lessonsPlanned": "cours programmé(s)",
+    "nextInterval": "Prochaine Pause",
+    "nextLesson": "Prochain Cours",
+    "availableToday": "Cours Disponibles Aujourd'hui",
+    "startLesson": "Commencer le Cours",
+    "status": {
+      "completed": "Terminé",
+      "noShow": "Rattrapage programmé",
+      "prepare": "Préparez-vous",
+      "timeToStart": "Heure de commencer",
+      "upcoming": "À venir"
+    },
+    "scheduleError": "Erreur de planning:",
+    "usingMockData": "Utilisation des données simulées comme solution de secours",
+    "loadingStudentInfo": "Chargement des informations de l'étudiant",
+    "noChildrenRegistered": "Aucun enfant enregistré",
+    "confirmApplyChanges": "Voulez-vous appliquer les modifications apportées à l'édition ?",
+    "debugInfo": "Debug:",
+    "stats": {
+      "completedThisWeek": "Cours terminés cette semaine",
+      "remainingClasses": "Cours restants",
+      "differentTeachers": "Professeurs différents"
+    },
+    "points": "Points",
+    "achievements": "Réalisations",
+    "class": "Cours",
+    "renderError": "Erreur de rendu",
+    "changesApplied": "Modifications appliquées définitivement",
+    "changesDiscarded": "Modifications supprimées",
+    "activatingEditMode": "Activation du mode d'édition, weekSchedule:",
+    "dayClassesCount": "Jour {{date}}: {{count}} cours",
+    "editableWeekCreated": "EditableWeek créé:",
+    "debug": {
+      "activeChild": "Calendrier: activeChild =",
+      "useEffectExecuted": "useEffect [weekStart, activeChild?.id] exécuté:",
+      "componentLoaded": "Calendrier: Composant chargé, activeChild:",
+      "generatingSchedule": "Génération du planning pour:",
+      "scheduleGenerated": "Planning généré:",
+      "usingEditableWeek": "Utilisation d'editableWeek pour aujourd'hui:",
+      "usingWeekSchedule": "Utilisation de weekSchedule pour aujourd'hui:",
+      "usingWeekClasses": "Utilisation de weekClasses pour aujourd'hui:",
+      "debugToday": "Debug aujourd'hui:",
+      "renderingFallback": "Calendrier: Rendu de secours - aucun étudiant actif",
+      "redirectingNoChildren": "Calendrier: Aucun enfant trouvé, redirection vers sélectionner-étudiant",
+      "renderingMainContent": "Calendrier: Rendu du contenu principal"
+    },
+    "error": {
+      "generatingSchedule": "Erreur lors de la génération du planning hebdomadaire:",
+      "unknownError": "Erreur inconnue"
+    }
+  },
+  "subjects": {
+    "portuguese": "Portugais",
+    "math": "Mathématiques",
+    "history": "Histoire",
+    "science": "Sciences",
+    "geography": "Géographie",
+    "english": "Anglais",
+    "french": "Français",
+    "arts": "Arts",
+    "physicalEducation": "Éducation Physique",
+    "music": "Musique"
+  },
+  "dashboard": {
+    "hello": "Bonjour, {{name}} !",
+    "continue_learning": "Continuons l'apprentissage !",
+    "view_calendar": "Voir le Calendrier",
+    "welcome_to_lykeon": "Bienvenue sur Lykeon !",
+    "register_child_message": "Enregistrez un enfant pour commencer l'apprentissage.",
+    "register_child": "Enregistrer un Enfant",
+    "continue_learning_title": "Continuer l'Apprentissage !",
+    "continue_studies": "Continuez vos études, {{name}} !",
+    "general_progress": "Progrès Général",
+    "in_development": "En développement",
+    "no_student_selected": "Aucun étudiant sélectionné",
+    "select_student": "Sélectionner un Étudiant",
+    "next_class": "Prochain Cours",
+    "study_schedule": "Votre planning d'études",
+    "scheduled_classes_message": "Les cours programmés apparaîtront ici",
+    "achievements": "Réalisations",
+    "celebrate_success": "Célébrez vos succès !",
+    "achievements_message": "Vos réalisations apparaîtront ici",
+    "view_achievements": "Voir les Réalisations",
+    "lessons_completed": "Leçons terminées",
+    "time_studied": "Temps d'étude",
+    "average_correct": "Moyenne des bonnes réponses",
+    "medals_won": "Médailles gagnées",
+    "explore_lykeon": "Explorer Lykeon",
+    "access_platform": "Accédez aux fonctionnalités de la plateforme",
+    "parents_dashboard": "Tableau de Bord des Parents"
+  },
+  "gamification": {
+    "xp": "XP",
+    "lumis": "Lumis",
+    "protectorUsed": "Protecteur utilisé !",
+    "streakProtectedToday": "Votre séquence est protégée pour aujourd'hui.",
+    "gamificationDataError": "Erreur lors du chargement des données de gamification",
+    "missionClaimed": "Mission réclamée",
+    "earned": "Gagné",
+    "and": "et",
+    "missionClaimError": "Erreur lors de la réclamation de la mission"
+  },
+  "subscription": {
+    "title": "Abonnez-vous à Lykeon et débloquez l'avenir de l'éducation de votre enfant",
+    "subtitle": "Plans flexibles, avantages exclusifs et annulation facile.",
+    "monthlyPlan": "Plan Mensuel",
+    "annualPlan": "Plan Annuel",
+    "monthlyPrice": "14,90 $",
+    "annualPrice": "149,00 $",
+    "monthlyUnit": "CAD/mois",
+    "annualUnit": "CAD/an",
+    "monthlyDescription": "Parfait pour commencer",
+    "annualDescription": "Meilleure valeur pour votre famille",
+    "mostPopular": "Plus populaire",
+    "savings": "Économisez ~15%",
+    "signUpNow": "S'abonner maintenant",
+    "faqTitle": "Questions Fréquemment Posées",
+    "faq": {
+      "cancelQuestion": "Puis-je annuler à tout moment ?",
+      "cancelAnswer": "Oui, sans frais cachés.",
+      "paymentQuestion": "Quels modes de paiement sont acceptés ?",
+      "paymentAnswer": "Carte de crédit, carte de débit et Interac.",
+      "trialQuestion": "Puis-je essayer avant d'acheter ?",
+      "trialAnswer": "Oui, nous offrons 7 jours gratuits au premier accès."
+    },
+    "benefits": {
+      "monthly": [
+        "Accès complet aux leçons et calendrier intelligent",
+        "Tableau de bord des parents avec rapports hebdomadaires",
+        "Gamification (XP, Lumis, succès)",
+        "Support technique de base"
+      ],
+      "annual": [
+        "Rapports mensuels PDF envoyés par e-mail",
+        "Support technique prioritaire",
+        "Accès anticipé aux nouvelles fonctionnalités"
+      ]
+    },
+    "trustFooter": "Votre abonnement aide Lykeon à continuer de transformer l'éducation. Merci pour votre confiance !"
+  },
+  "parentsDashboard": {
+    "title": "👨‍👩‍👧‍👦 Tableau de Bord des Parents",
+    "subtitle": "Résumé par enfant, KPIs et alertes",
+    "settings": "Paramètres",
+    "noChildren": "👶 Aucun enfant enregistré",
+    "noChildrenDescription": "Ajoutez un enfant pour commencer à suivre les progrès.",
+    "addChild": "➕ Ajouter un Enfant",
+    "viewProfile": "👀 Voir le Profil",
+    "manageChild": "Gérer {{name}}",
+    "kpis": {
+      "attendance": "Présence",
+      "quizzes": "Quiz",
+      "hoursPerWeek": "⏰ Heures/semaine"
+    },
+    "alerts": {
+      "title": "🚨 Alertes",
+      "noAlerts": "✅ Aucune alerte pour le moment"
+    },
+    "progress": {
+      "title": "Progrès par matière",
+      "comingSoon": "📝 Bientôt : données de progrès par matière"
+    },
+    "activities": {
+      "title": "🎯 Activités",
+      "quizzes": {
+        "title": "Quiz",
+        "description": "Testez les connaissances de vos enfants"
+      },
+      "calendar": {
+        "title": "Calendrier",
+        "description": "Suivez l'emploi du temps scolaire"
+      },
+      "reports": {
+        "title": "Rapports",
+        "description": "Visualisez les progrès académiques"
+      }
+    },
+    "todo": "TODO : Intégrer avec backend/Supabase pour des données réelles • Générer des rapports PDF • Internationalisation (fr-CA/en-US)"
+  },
+  "studentProfile": {
+    "studentNotFound": "🚫 Étudiant non trouvé",
+    "studentNotFoundDescription": "L'étudiant demandé n'a pas été trouvé ou vous n'avez pas la permission de le visualiser.",
+    "backToDashboard": "← Retour au Tableau de Bord",
+    "student": "Étudiant",
+    "points": "⭐ — points",
+    "calendar": "📅 Calendrier",
+    "kpis": {
+      "attendance": "📊 Présence",
+      "quizCorrect": "Quiz corrects",
+      "hoursPerWeek": "⏰ Heures/semaine"
+    },
+    "comingSoon": "Bientôt disponible",
+    "progressBySubject": "Progrès par matière",
+    "progressDescription": "Le progrès par matière sera affiché ici lorsque les leçons seront intégrées au système.",
+    "achievements": {
+      "title": "🏆 Succès",
+      "description": "Les succès et médailles seront affichés ici selon les progrès de l'étudiant."
+    },
+    "reports": {
+      "title": "📄 Rapports (PDF)",
+      "description": "Les rapports mensuels seront générés et mis à disposition ici."
+    },
+    "backToParentsDashboard": "← Retour au Tableau de Bord des Parents"
+  },
+  "settings": {
+    "pageTitle": "⚙️ Paramètres",
+    "quietHours": {
+      "start": "Début",
+      "end": "Fin",
+      "description": "Configurez une période pour ne pas recevoir de notifications push (22:00–07:00)"
+    },
+    "accessibility": {
+      "subtitlesDescription": "Afficher les sous-titres dans les vidéos"
+    },
+    "support": {
+      "subjectPlaceholder": "Décrivez brièvement le problème",
+      "descriptionPlaceholder": "Décrivez le problème en détail...",
+      "ticketButton": "ticket",
+      "diagnosisDescription": "Informations techniques qui aident notre équipe à résoudre les problèmes",
+      "sendDiagnosis": "Envoyer le diagnostic"
+    },
+    "faq": {
+      "resetPassword": "Comment réinitialiser mon mot de passe ?",
+      "changePlan": "Comment changer mon plan ?",
+      "videoProblems": "Problèmes avec la vidéo ?",
+      "achievements": "Comment utiliser les conquêtes ?",
+      "notifications": "Configurer les notifications ?"
+    }
   }
 }

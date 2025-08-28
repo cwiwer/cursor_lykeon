@@ -44,8 +44,8 @@ export function AppSidebar() {
   const collapsed = state === 'collapsed';
 
   const mainItems = [
-    { title: t('dashboard'), url: '/dashboard-aluno', icon: Home },
-    { title: t('calendar'), url: '/calendario', icon: Calendar },
+    { title: t('sidebar.dashboard'), url: '/dashboard-aluno', icon: Home },
+    { title: t('sidebar.calendar'), url: '/calendario', icon: Calendar },
     { title: t('exercises'), url: '/exercicios', icon: BookOpen },
     { title: t('quizzes'), url: '/quizzes', icon: Brain },
     { title: t('reports'), url: '/relatorios', icon: BarChart3 },
@@ -67,8 +67,8 @@ export function AppSidebar() {
   ];
 
   const settingsItems = [
-    { title: t('subscription'), url: '/assinaturas', icon: CreditCard },
-    { title: t('settings'), url: '/configuracoes', icon: Settings },
+    { title: t('sidebar.subscription'), url: '/assinaturas', icon: CreditCard },
+    { title: t('parentsDashboard.settings'), url: '/configuracoes', icon: Settings },
   ];
 
   const isActive = (path: string) => currentPath === path;

@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, MoreVertical, Brain } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ManageChildModal } from "@/components/children/ManageChildModal";
+import { AppLayout } from "@/components/Layout/AppLayout";
 
 function KPIBox({ label, value, subtitle }: { label: string; value: string; subtitle?: string }) {
   return (
@@ -36,8 +37,8 @@ export default function PaisDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-playful">
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      <AppLayout>
+        <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
           <Card className="border-2 border-primary/20 bg-gradient-card backdrop-blur-sm">
             <CardContent className="p-6">
               <Skeleton className="h-8 w-64 mb-2" />
@@ -54,27 +55,34 @@ export default function PaisDashboard() {
             ))}
           </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-playful">
-      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+    <AppLayout>
+      <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
         {/* Header */}
-        <Card className="border-2 border-primary/20 bg-gradient-card backdrop-blur-sm">
+        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-extrabold text-foreground">👨‍👩‍👧‍👦 Painel dos Pais</h1>
-                <p className="text-lg text-muted-foreground mt-1">Resumo por criança, KPIs e alertas</p>
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                  👨‍👩‍👧‍👦
+                </div>
+                <div>
+                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                    {t('parentsDashboard.title')}
+                  </h1>
+                  <p className="text-lg text-kid-green mt-1">{t('parentsDashboard.subtitle')}</p>
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 <Link 
                   to="/configuracoes" 
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  ⚙️ Configurações
+                  {t('parentsDashboard.settings')}
                 </Link>
               </div>
             </div>
@@ -87,16 +95,16 @@ export default function PaisDashboard() {
             <Card className="col-span-full border-2 border-muted-foreground/20 bg-muted/20">
               <CardContent className="p-6 text-center">
                 <div className="text-lg font-semibold text-muted-foreground mb-2">
-                  👶 Nenhuma criança cadastrada
+                  {t('parentsDashboard.noChildren')}
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Adicione uma criança para começar a acompanhar o progresso.
+                  {t('parentsDashboard.noChildrenDescription')}
                 </p>
                 <button 
                   onClick={() => setShowAddModal(true)}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg inline-block"
                 >
-                  ➕ {t("children.add")}
+                  {t('parentsDashboard.addChild')}
                 </button>
               </CardContent>
             </Card>
@@ -121,14 +129,14 @@ export default function PaisDashboard() {
                         to={`/aluno/${child.id}`} 
                         className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-1.5 rounded-full text-sm font-semibold transition-all duration-200"
                       >
-                        👀 Ver Perfil
+                        {t('parentsDashboard.viewProfile')}
                       </Link>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setManageChild(child)}
                         className="h-8 w-8 p-0 hover:bg-slate-100"
-                        aria-label={`Gerenciar ${child.first_name}`}
+                        aria-label={t('parentsDashboard.manageChild', { name: child.first_name })}
                       >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
@@ -139,24 +147,24 @@ export default function PaisDashboard() {
                 <CardContent className="space-y-4">
                   {/* Placeholder para KPIs futuros */}
                   <div className="grid grid-cols-3 gap-2">
-                    <KPIBox label="Presença" value="—%" />
-                    <KPIBox label="Quizzes" value="—%" />
-                    <KPIBox label="⏰ Horas/sem" value="—h" />
+                    <KPIBox label={t('parentsDashboard.kpis.attendance')} value="—%" />
+                    <KPIBox label={t('parentsDashboard.kpis.quizzes')} value="—%" />
+                    <KPIBox label={t('parentsDashboard.kpis.hoursPerWeek')} value="—h" />
                   </div>
 
                   {/* Placeholder para alertas */}
                   <div>
-                    <h3 className="text-sm font-bold mb-2 text-foreground">🚨 Alertas</h3>
+                    <h3 className="text-sm font-bold mb-2 text-foreground">{t('parentsDashboard.alerts.title')}</h3>
                     <div className="text-xs text-muted-foreground bg-muted/20 rounded-lg p-2">
-                      ✅ Sem alertas no momento
+                      {t('parentsDashboard.alerts.noAlerts')}
                     </div>
                   </div>
 
                   {/* Placeholder para progresso */}
                   <div>
-                    <h3 className="text-sm font-bold mb-2 text-foreground">Progresso por matéria</h3>
+                    <h3 className="text-sm font-bold mb-2 text-foreground">{t('parentsDashboard.progress.title')}</h3>
                     <div className="text-xs text-muted-foreground bg-muted/20 rounded-lg p-2">
-                      📝 Em breve: dados de progresso por matéria
+                      {t('parentsDashboard.progress.comingSoon')}
                     </div>
                   </div>
                 </CardContent>
@@ -167,7 +175,7 @@ export default function PaisDashboard() {
 
         {/* Seção de Atividades */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">🎯 Atividades</h2>
+          <h2 className="text-2xl font-bold text-foreground">{t('parentsDashboard.activities.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link to="/quizzes">
               <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
@@ -175,9 +183,9 @@ export default function PaisDashboard() {
                   <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
                     <Brain className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-blue-800 mb-2">Quizzes</h3>
+                  <h3 className="text-lg font-bold text-blue-800 mb-2">{t('parentsDashboard.activities.quizzes.title')}</h3>
                   <p className="text-sm text-blue-600">
-                    Teste os conhecimentos dos seus filhos
+                    {t('parentsDashboard.activities.quizzes.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -189,9 +197,9 @@ export default function PaisDashboard() {
                   <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-green-500 flex items-center justify-center">
                     📅
                   </div>
-                  <h3 className="text-lg font-bold text-green-800 mb-2">Calendário</h3>
+                  <h3 className="text-lg font-bold text-green-800 mb-2">{t('parentsDashboard.activities.calendar.title')}</h3>
                   <p className="text-sm text-green-600">
-                    Acompanhe a agenda escolar
+                    {t('parentsDashboard.activities.calendar.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -203,9 +211,9 @@ export default function PaisDashboard() {
                   <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-purple-500 flex items-center justify-center">
                     📊
                   </div>
-                  <h3 className="text-lg font-bold text-purple-800 mb-2">Relatórios</h3>
+                  <h3 className="text-lg font-bold text-purple-800 mb-2">{t('parentsDashboard.activities.reports.title')}</h3>
                   <p className="text-sm text-purple-600">
-                    Visualize o progresso acadêmico
+                    {t('parentsDashboard.activities.reports.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -217,7 +225,7 @@ export default function PaisDashboard() {
         <Card className="border-2 border-muted-foreground/20 bg-muted/20">
           <CardContent className="p-4">
             <div className="text-xs text-muted-foreground font-mono">
-              TODO: Integrar com backend/Supabase para dados reais • Gerar PDFs de relatório • Internacionalização (pt‑BR/fr‑CA)
+              {t('parentsDashboard.todo')}
             </div>
           </CardContent>
         </Card>
@@ -242,6 +250,6 @@ export default function PaisDashboard() {
           />
         )}
       </div>
-    </div>
+    </AppLayout>
   );
 }

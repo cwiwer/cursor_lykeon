@@ -98,13 +98,21 @@ export default function Configuracoes() {
   return (
     <AppLayout>
       <div className="container mx-auto p-6 space-y-8">
-        <div className="flex items-center gap-3">
-          <Settings className="w-8 h-8 text-primary" />
-          <div>
-            <h1 className="text-2xl font-bold">{t('settings')}</h1>
-            <p className="text-muted-foreground">{t('personalizeExperience')}</p>
-          </div>
-        </div>
+        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                <Settings className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                  {t('settings.pageTitle')}
+                </h1>
+                <p className="text-lg text-kid-green mt-1">{t('personalizeExperience')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Perfil & Conta */}
         <Card>
@@ -174,15 +182,15 @@ export default function Configuracoes() {
               <div className="space-y-3">
                 <h4 className="font-medium">{t('quietHours')}</h4>
                 <p className="text-sm text-muted-foreground">
-                  Configure um período para não receber notificações push (22:00–07:00)
+                  {t('settings.quietHours.description')}
                 </p>
                 <div className="grid grid-cols-2 gap-3 max-w-xs">
                   <div>
-                    <Label htmlFor="quiet-start" className="text-xs">Início</Label>
+                    <Label htmlFor="quiet-start" className="text-xs">{t('settings.quietHours.start')}</Label>
                     <Input id="quiet-start" type="time" defaultValue="22:00" />
                   </div>
                   <div>
-                    <Label htmlFor="quiet-end" className="text-xs">Fim</Label>
+                    <Label htmlFor="quiet-end" className="text-xs">{t('settings.quietHours.end')}</Label>
                     <Input id="quiet-end" type="time" defaultValue="07:00" />
                   </div>
                 </div>
@@ -196,7 +204,7 @@ export default function Configuracoes() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Accessibility className="w-5 h-5" />
-              {t('accessibility')} & UX
+              {t('accessibility')} & {t('ux')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -223,7 +231,7 @@ export default function Configuracoes() {
               <div className="flex items-center justify-between">
                 <div>
                   <Label>{t('autoSubtitles')}</Label>
-                  <p className="text-sm text-muted-foreground">Exibir legendas em vídeos</p>
+                  <p className="text-sm text-muted-foreground">{t('settings.accessibility.subtitlesDescription')}</p>
                 </div>
                 <Switch />
               </div>
@@ -245,16 +253,16 @@ export default function Configuracoes() {
                 <Label htmlFor="ticket-subject">{t('subject')}</Label>
                 <Input
                   id="ticket-subject"
-                  placeholder="Descreva brevemente o problema"
+                  placeholder={t('settings.support.subjectPlaceholder')}
                   value={ticket.subject}
                   onChange={e => setTicket({ ...ticket, subject: e.target.value })}
                 />
               </div>
               <div>
-                <Label htmlFor="ticket-description">{t('description')} detalhada</Label>
+                <Label htmlFor="ticket-description">{t('description')} {t('detailed')}</Label>
                 <Textarea
                   id="ticket-description"
-                  placeholder="Descreva o problema em detalhes..."
+                  placeholder={t('settings.support.descriptionPlaceholder')}
                   rows={4}
                   value={ticket.description}
                   onChange={e => setTicket({ ...ticket, description: e.target.value })}
@@ -266,7 +274,7 @@ export default function Configuracoes() {
                 className="gap-2"
               >
                 <Send className="w-4 h-4" />
-                {submitting ? t('sending') + "..." : t('send') + " chamado"}
+                {submitting ? t('sending') + "..." : t('send') + " " + t('settings.support.ticketButton')}
               </Button>
             </div>
             
@@ -276,11 +284,11 @@ export default function Configuracoes() {
               <h4 className="font-medium">{t('faq')}</h4>
               <div className="flex flex-wrap gap-2">
                 {[
-                  "Como resetar minha senha?",
-                  "Como alterar meu plano?",
-                  "Problemas com vídeo?",
-                  "Como usar as conquistas?",
-                  "Configurar notificações?"
+                  t('settings.faq.resetPassword'),
+                  t('settings.faq.changePlan'),
+                  t('settings.faq.videoProblems'),
+                  t('settings.faq.achievements'),
+                  t('settings.faq.notifications')
                 ].map(question => (
                   <Button key={question} variant="outline" size="sm">
                     {question}
@@ -294,10 +302,10 @@ export default function Configuracoes() {
             <div className="space-y-3">
               <h4 className="font-medium">{t('diagnosis')}</h4>
               <p className="text-sm text-muted-foreground">
-                Informações técnicas que ajudam nossa equipe a resolver problemas
+                {t('settings.support.diagnosisDescription')}
               </p>
               <Button variant="outline" size="sm">
-                Enviar diagnóstico
+                {t('settings.support.sendDiagnosis')}
               </Button>
             </div>
           </CardContent>

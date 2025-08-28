@@ -24,111 +24,119 @@ import { getBadgeRarityStyle, getBadgeCategoryIcon } from '@/ui/gamification';
 import type { Mission, Badge as BadgeType, BadgeRarity, XPRecord, CurrencyWallet, Streak, Focus, EventBanner, EngagementMetrics } from '@/types/gamification';
 import { useEffect, useCallback } from 'react';
 
-function XPBar({ current, target }: { current: number; target: number }) {
-  const pct = Math.min(100, Math.round((current / target) * 100));
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-sm">
-        <span>{current} XP</span>
-        <span>{target} XP</span>
-      </div>
-      <Progress value={pct} className="h-3" />
-    </div>
-  );
-}
+// XPBar Component - será definido dentro da função principal
 
-function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: string) => void }) {
-  const resetTime = new Date(mission.resetsAtISO).toLocaleTimeString('pt-BR', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
-  });
-
-  return (
-    <Card className="h-full">
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-sm">{mission.name}</h3>
-          <p className="text-xs text-muted-foreground">{mission.description}</p>
-        </div>
-        
-        <div className="space-y-1">
-          <div className="flex justify-between text-xs">
-            <span>Progresso</span>
-            <span>{mission.progress}%</span>
-          </div>
-          <Progress value={mission.progress} className="h-2" />
-        </div>
-
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>🏆 {mission.rewardXP} XP</span>
-          <span>💰 {mission.rewardLumis} Lumis</span>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Badge variant={mission.period === 'daily' ? 'default' : 'secondary'} className="text-xs">
-              {mission.period === 'daily' ? 'Diária' : 'Semanal'}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {mission.status === 'active' ? 'Ativa' : 
-               mission.status === 'completed' ? 'Concluída' : 'Resgatada'}
-            </Badge>
-          </div>
-          <span className="text-xs text-muted-foreground">
-            ↻ {resetTime}
-          </span>
-        </div>
-
-        {mission.status === 'completed' && (
-          <Button 
-            onClick={() => onClaim(mission.id)}
-            className="w-full"
-            size="sm"
-          >
-            <Gift className="h-4 w-4 mr-2" />
-            Resgatar
-          </Button>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function BadgePill({ badge }: { badge: BadgeType }) {
-  const isLocked = !badge.unlockedAtISO;
-  const rarityStyle = getBadgeRarityStyle(badge.rarity);
-  const categoryIcon = getBadgeCategoryIcon(badge.category);
-
-  return (
-    <Card className={`${isLocked ? 'opacity-50' : ''} transition-all hover:scale-105`}>
-      <CardContent className="p-3 space-y-2">
-        <div className="flex items-center gap-2">
-          {categoryIcon}
-          <div className="min-w-0 flex-1">
-            <h4 className="font-medium text-sm truncate">{badge.name}</h4>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{badge.category}</span>
-              <Badge className={`text-xs ${rarityStyle}`}>
-                {badge.rarity}
-              </Badge>
-            </div>
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          {isLocked 
-            ? '🔒 Bloqueada' 
-            : `Desbloqueada em ${new Date(badge.unlockedAtISO!).toLocaleDateString('pt-BR')}`
-          }
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
+// MissionCard Component - será definido dentro da função principal
+// BadgePill Component - será definido dentro da função principal
 
 export default function Conquistas() {
   const { toast } = useToast();
   const { t } = useTranslation();
   const { user } = useAuth();
+
+  // XPBar Component - definido dentro da função principal para ter acesso ao hook useTranslation
+  function XPBar({ current, target }: { current: number; target: number }) {
+    const pct = Math.min(100, Math.round((current / target) * 100));
+    return (
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+                  <span>{current} {t('gamification.xp')}</span>
+        <span>{target} {t('gamification.xp')}</span>
+        </div>
+        <Progress value={pct} className="h-3" />
+      </div>
+    );
+  }
+
+  // MissionCard Component - definido dentro da função principal para ter acesso ao hook useTranslation
+  function MissionCard({ mission, onClaim }: { mission: Mission; onClaim: (id: string) => void }) {
+    const resetTime = new Date(mission.resetsAtISO).toLocaleTimeString('pt-BR', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+
+    return (
+      <Card className="h-full">
+        <CardContent className="p-4 space-y-3">
+          <div>
+            <h3 className="font-semibold text-sm">{mission.name}</h3>
+            <p className="text-xs text-muted-foreground">{mission.description}</p>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs">
+              <span>{t('exercisesPage.achievements.mission.progress')}</span>
+              <span>{mission.progress}%</span>
+            </div>
+            <Progress value={mission.progress} className="h-2" />
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>🏆 {mission.rewardXP} {t('gamification.xp')}</span>
+          <span>💰 {mission.rewardLumis} {t('gamification.lumis')}</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Badge variant={mission.period === 'daily' ? 'default' : 'secondary'} className="text-xs">
+                {mission.period === 'daily' ? t('exercisesPage.achievements.mission.daily') : t('exercisesPage.achievements.mission.weekly')}
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                {mission.status === 'active' ? t('exercisesPage.achievements.mission.active') : 
+                 mission.status === 'completed' ? t('exercisesPage.achievements.mission.completed') : t('exercisesPage.achievements.mission.claimed')}
+              </Badge>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {t('exercisesPage.achievements.mission.resetTime', { time: resetTime })}
+            </span>
+          </div>
+
+          {mission.status === 'completed' && (
+            <Button 
+              onClick={() => onClaim(mission.id)}
+              className="w-full"
+              size="sm"
+            >
+              <Gift className="h-4 w-4 mr-2" />
+              {t('exercisesPage.achievements.mission.claim')}
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // BadgePill Component - definido dentro da função principal para ter acesso ao hook useTranslation
+  function BadgePill({ badge }: { badge: BadgeType }) {
+    const isLocked = !badge.unlockedAtISO;
+    const rarityStyle = getBadgeRarityStyle(badge.rarity);
+    const categoryIcon = getBadgeCategoryIcon(badge.category);
+
+    return (
+      <Card className={`${isLocked ? 'opacity-50' : ''} transition-all hover:scale-105`}>
+        <CardContent className="p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            {categoryIcon}
+            <div className="min-w-0 flex-1">
+              <h4 className="font-medium text-sm truncate">{badge.name}</h4>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{badge.category}</span>
+                <Badge className={`text-xs ${rarityStyle}`}>
+                  {badge.rarity}
+                </Badge>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {isLocked 
+              ? t('exercisesPage.achievements.badge.locked')
+              : t('exercisesPage.achievements.badge.unlockedOn', { date: new Date(badge.unlockedAtISO!).toLocaleDateString() })
+            }
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
   
   // Estados
   const [xp, setXp] = useState<XPRecord>({ currentXP: 0, nextLevelXP: 800, level: 1 });
@@ -139,9 +147,9 @@ export default function Conquistas() {
   const [focus, setFocus] = useState<Focus>({ max: 5, remaining: 5 });
   const [eventBanner] = useState<EventBanner>({
     id: "winter-2025",
-    title: "❄️ Evento de Inverno 2025",
-    subtitle: "Conquiste badges exclusivos até 31/08!",
-    cta: "Participar"
+    title: t('exercisesPage.achievements.event.winter2025'),
+    subtitle: t('exercisesPage.achievements.event.exclusiveBadges'),
+    cta: t('exercisesPage.achievements.event.participate')
   });
   const [engagementMetrics] = useState<EngagementMetrics>({
     activeDaysThisWeek: 4,
@@ -184,7 +192,7 @@ export default function Conquistas() {
         console.error("Error loading gamification data:", error);
         toast({
           title: t("error"),
-          description: "Erro ao carregar dados de gamificação",
+          description: t("gamificationDataError"),
           variant: "destructive",
         });
       }
@@ -245,10 +253,10 @@ export default function Conquistas() {
   const handleUseProtection = () => {
     if (streak.protectedDays > 0) {
       setStreak(prev => ({ ...prev, protectedDays: prev.protectedDays - 1 }));
-      toast({
-        title: "Protetor usado!",
-        description: "Sua sequência está protegida por hoje.",
-      });
+              toast({
+          title: t("protectorUsed"),
+          description: t("streakProtectedToday"),
+        });
     }
   };
 
@@ -269,12 +277,23 @@ export default function Conquistas() {
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
           {/* Header */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold">Conquistas & Gamificação</h1>
-            <p className="text-muted-foreground">
-              Acompanhe seu progresso, complete missões e desbloqueie conquistas!
-            </p>
-          </div>
+          <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                  🏆
+                </div>
+                <div>
+                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
+                    {t('exercisesPage.achievements.title')}
+                  </h1>
+                  <p className="text-lg text-kid-green mt-1">
+                    {t('exercisesPage.achievements.subtitle')}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -283,7 +302,7 @@ export default function Conquistas() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Trophy className="h-5 w-5 text-yellow-600" />
-                  Nível {xp.level}
+                  {t('exercisesPage.achievements.level', { level: xp.level })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -297,13 +316,13 @@ export default function Conquistas() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Coins className="h-5 w-5 text-yellow-600" />
-                  Lumis
+                  {t('exercisesPage.achievements.lumis')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-2xl font-bold">{wallet.lumis}</div>
                 <Button variant="outline" size="sm" className="w-full">
-                  Loja (em breve)
+                  {t('exercisesPage.achievements.store')}
                 </Button>
               </CardContent>
             </Card>
@@ -313,14 +332,14 @@ export default function Conquistas() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Flame className="h-5 w-5 text-orange-600" />
-                  Sequência
+                  {t('exercisesPage.achievements.streak')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <div className="text-2xl font-bold">{streak.current} dias</div>
+                  <div className="text-2xl font-bold">{t('exercisesPage.achievements.days', { count: streak.current })}</div>
                   <div className="text-sm text-muted-foreground">
-                    Melhor: {streak.best} dias
+                    {t('exercisesPage.achievements.best', { count: streak.best })}
                   </div>
                 </div>
                 {streak.protectedDays > 0 && (
@@ -331,7 +350,7 @@ export default function Conquistas() {
                     onClick={handleUseProtection}
                   >
                     <Shield className="h-4 w-4 mr-2" />
-                    Usar Protetor ({streak.protectedDays})
+                    {t('exercisesPage.achievements.useProtector', { count: streak.protectedDays })}
                   </Button>
                 )}
               </CardContent>
@@ -342,7 +361,7 @@ export default function Conquistas() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Heart className="h-5 w-5 text-red-600" />
-                  Pontos de Foco
+                  {t('exercisesPage.achievements.focusPoints')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -350,7 +369,7 @@ export default function Conquistas() {
                   {focus.remaining}/{focus.max}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Erros consomem foco, mas não bloqueiam o progresso
+                  {t('exercisesPage.achievements.focusDescription')}
                 </div>
               </CardContent>
             </Card>
@@ -361,12 +380,12 @@ export default function Conquistas() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-purple-900">{eventBanner.title}</h3>
-                  <p className="text-purple-700">{eventBanner.subtitle}</p>
+                  <h3 className="text-xl font-bold text-purple-900">{t('exercisesPage.achievements.event.winter2025')}</h3>
+                  <p className="text-purple-700">{t('exercisesPage.achievements.event.exclusiveBadges')}</p>
                 </div>
                 <Button className="bg-purple-600 hover:bg-purple-700">
                   <Star className="h-4 w-4 mr-2" />
-                  {eventBanner.cta}
+                  {t('exercisesPage.achievements.event.participate')}
                 </Button>
               </div>
             </CardContent>
@@ -378,7 +397,7 @@ export default function Conquistas() {
             <div className="space-y-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                Missões Diárias
+                {t('exercisesPage.achievements.dailyMissions')}
               </h2>
               <div className="grid gap-4">
                 {dailyMissions.map(mission => (
@@ -395,7 +414,7 @@ export default function Conquistas() {
             <div className="space-y-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                Missões Semanais
+                {t('exercisesPage.achievements.weeklyMissions')}
               </h2>
               <div className="grid gap-4">
                 {weeklyMissions.map(mission => (
@@ -412,7 +431,7 @@ export default function Conquistas() {
           {/* Museu do Estudante (Badges) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold">Museu do Estudante</h2>
+              <h2 className="text-xl font-bold">{t('exercisesPage.achievements.studentMuseum')}</h2>
               <div className="flex gap-2">
                 <select 
                   value={selectedCategory}
@@ -421,7 +440,7 @@ export default function Conquistas() {
                 >
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>
-                      {cat === 'all' ? 'Todas as categorias' : cat}
+                      {cat === 'all' ? t('exercisesPage.achievements.allCategories') : cat}
                     </option>
                   ))}
                 </select>
@@ -432,7 +451,7 @@ export default function Conquistas() {
                 >
                   {rarities.map(rarity => (
                     <option key={rarity} value={rarity}>
-                      {rarity === 'all' ? 'Todas as raridades' : rarity}
+                      {rarity === 'all' ? t('exercisesPage.achievements.allRarities') : rarity}
                     </option>
                   ))}
                 </select>
@@ -449,10 +468,10 @@ export default function Conquistas() {
           {/* Engagement Metrics */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Métricas de Engajamento
-              </CardTitle>
+                              <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  {t('exercisesPage.achievements.engagementMetrics')}
+                </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -460,19 +479,19 @@ export default function Conquistas() {
                   <div className="text-2xl font-bold text-green-600">
                     {engagementMetrics.activeDaysThisWeek}/7
                   </div>
-                  <div className="text-sm text-muted-foreground">Dias ativos (semana)</div>
+                  <div className="text-sm text-muted-foreground">{t('exercisesPage.achievements.activeDaysWeek')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600">
                     {engagementMetrics.completedMissions}
                   </div>
-                  <div className="text-sm text-muted-foreground">Missões concluídas</div>
+                  <div className="text-sm text-muted-foreground">{t('exercisesPage.achievements.completedMissions')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple-600">
                     {engagementMetrics.avgXPPerDay}
                   </div>
-                  <div className="text-sm text-muted-foreground">XP médio por dia</div>
+                  <div className="text-sm text-muted-foreground">{t('exercisesPage.achievements.avgXPPerDay')}</div>
                 </div>
               </div>
             </CardContent>

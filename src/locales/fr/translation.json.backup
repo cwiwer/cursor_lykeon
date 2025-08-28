@@ -8,12 +8,12 @@
   "name": "Nome",
 
   "notifications": "Notificações",
+  "settings": "Configurações",
   "achievements": "Conquistas",
   "support": "Suporte Técnico",
   "sidebar": {
     "dashboard": "Dashboard",
-    "calendar": "Calendário",
-    "subscription": "Assinaturas"
+    "calendar": "Calendário"
   },
   "common": {
     "loading": "Carregando...",
@@ -170,6 +170,7 @@
   },
   "reports": "Relatórios",
   "messages": "Mensagens",
+  "subscription": "Assinatura",
   "profile": "Perfil",
   "students": "Alunos",
   "classes": "Aulas",
@@ -186,12 +187,6 @@
   "delete": "Excluir",
   "create": "Criar",
   "update": "Atualizar",
-  "detailed": "detalhada",
-  "selectStudent": "Selecionar Aluno",
-  "selectStudentDescription": "Escolha qual criança está estudando agora",
-  "select": "Selecionar",
-  "active": "Ativo",
-  "student": "Estudante",
   "search": "Pesquisar",
   "filter": "Filtrar",
   "sort": "Ordenar",
@@ -218,7 +213,6 @@
   "sms": "SMS",
   "quietHours": "Horário silencioso",
   "accessibility": "Acessibilidade",
-  "ux": "UX",
   "language": "Idioma",
   "fontSize": "Tamanho da fonte",
   "contrast": "Contraste",
@@ -442,17 +436,16 @@
     "access_platform": "Acesse as funcionalidades da plataforma",
     "parents_dashboard": "Dashboard dos Pais"
   },
-  "gamification": {
-    "xp": "XP",
-    "lumis": "Lumis",
-    "protectorUsed": "Protetor usado!",
-    "streakProtectedToday": "Sua sequência está protegida por hoje.",
-    "gamificationDataError": "Erro ao carregar dados de gamificação",
-    "missionClaimed": "Missão resgatada",
-    "earned": "Ganhou",
-    "and": "e",
-    "missionClaimError": "Erro ao resgatar missão"
-  },
+  "xp": "XP",
+  "lumis": "Lumis",
+  "protectorUsed": "Protetor usado!",
+  "streakProtectedToday": "Sua sequência está protegida por hoje.",
+  "gamificationDataError": "Erro ao carregar dados de gamificação",
+  "missionClaimed": "Missão resgatada",
+  "earned": "Ganhou",
+  "and": "e",
+  "missionClaimError": "Erro ao resgatar missão"
+},
   "subscription": {
     "title": "Assine a Lykeon e desbloqueie o futuro da educação do seu filho",
     "subtitle": "Planos flexíveis, benefícios exclusivos e cancelamento fácil.",
@@ -494,7 +487,7 @@
   "parentsDashboard": {
     "title": "👨‍👩‍👧‍👦 Painel dos Pais",
     "subtitle": "Resumo por criança, KPIs e alertas",
-    "settings": "Configurações",
+    "settings": "⚙️ Configurações",
     "noChildren": "👶 Nenhuma criança cadastrada",
     "noChildrenDescription": "Adicione uma criança para começar a acompanhar o progresso.",
     "addChild": "➕ Adicionar Criança",
@@ -554,30 +547,5 @@
       "description": "Os relatórios mensais serão gerados e disponibilizados aqui."
     },
     "backToParentsDashboard": "← Voltar ao Dashboard dos Pais"
-  },
-  "settings": {
-    "pageTitle": "⚙️ Configurações",
-    "quietHours": {
-      "start": "Início",
-      "end": "Fim",
-      "description": "Configure um período para não receber notificações push (22:00–07:00)"
-    },
-    "accessibility": {
-      "subtitlesDescription": "Exibir legendas em vídeos"
-    },
-    "support": {
-      "subjectPlaceholder": "Descreva brevemente o problema",
-      "descriptionPlaceholder": "Descreva o problema em detalhes...",
-      "ticketButton": "chamado",
-      "diagnosisDescription": "Informações técnicas que ajudam nossa equipe a resolver problemas",
-      "sendDiagnosis": "Enviar diagnóstico"
-    },
-    "faq": {
-      "resetPassword": "Como resetar minha senha?",
-      "changePlan": "Como alterar meu plano?",
-      "videoProblems": "Problemas com vídeo?",
-      "achievements": "Como usar as conquistas?",
-      "notifications": "Configurar notificações?"
-    }
   }
 }

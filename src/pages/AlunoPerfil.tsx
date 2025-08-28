@@ -5,6 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
+import { AppLayout } from "@/components/Layout/AppLayout";
 
 function ProgressBar({ value }: { value: number }) {
   return <Progress value={value} className="h-3" />;
@@ -13,13 +15,14 @@ function ProgressBar({ value }: { value: number }) {
 export default function AlunoPerfil() {
   const { studentId } = useParams();
   const { children, loading } = useStudent();
+  const { t } = useTranslation();
   
   const child = children.find(c => c.id === studentId);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-playful">
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      <AppLayout>
+        <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
           <Card className="border-2 border-primary/20 bg-gradient-card backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -47,60 +50,60 @@ export default function AlunoPerfil() {
             ))}
           </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   if (!child) {
     return (
-      <div className="min-h-screen bg-gradient-playful p-4">
-        <div className="max-w-6xl mx-auto">
+      <AppLayout>
+        <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
           <Card className="border-2 border-destructive bg-destructive/5">
             <CardContent className="p-6">
-              <div className="text-destructive font-bold">🚫 Aluno não encontrado</div>
+              <div className="text-destructive font-bold">{t('studentProfile.studentNotFound')}</div>
               <p className="text-muted-foreground mt-2">
-                O aluno solicitado não foi encontrado ou você não tem permissão para visualizá-lo.
+                {t('studentProfile.studentNotFoundDescription')}
               </p>
               <Link 
                 to="/pais/dashboard" 
                 className="inline-block mt-4 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full font-semibold transition-all duration-300"
               >
-                ← Voltar ao Dashboard
+                {t('studentProfile.backToDashboard')}
               </Link>
             </CardContent>
           </Card>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-playful">
-      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+    <AppLayout>
+      <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
         {/* Header */}
-        <Card className="border-2 border-primary/20 bg-gradient-card backdrop-blur-sm">
+        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-2xl shadow-lg">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
                   👦
                 </div>
                 <div>
-                  <h1 className="text-3xl font-extrabold text-foreground">
+                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent">
                     {child.first_name} {child.last_name || ''}
                   </h1>
-                  <p className="text-lg text-muted-foreground font-medium">{child.grade || 'Estudante'}</p>
+                  <p className="text-lg text-kid-green font-medium">{child.grade || t('studentProfile.student')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Badge variant="secondary" className="text-sm px-4 py-2">
-                  ⭐ — pontos
+                  {t('studentProfile.points')}
                 </Badge>
                 <Link 
                   to="/calendario" 
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  📅 Calendário
+                  {t('studentProfile.calendar')}
                 </Link>
               </div>
             </div>
@@ -111,43 +114,43 @@ export default function AlunoPerfil() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="border-2 border-pastel-blue/20 bg-gradient-card backdrop-blur-sm hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">📊 Presença</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{t('studentProfile.kpis.attendance')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-extrabold text-pastel-blue mb-2">—%</div>
-              <div className="text-xs text-muted-foreground">Em breve</div>
+              <div className="text-xs text-muted-foreground">{t('studentProfile.comingSoon')}</div>
             </CardContent>
           </Card>
           
           <Card className="border-2 border-pastel-purple/20 bg-gradient-card backdrop-blur-sm hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">Quizzes corretos</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{t('studentProfile.kpis.quizCorrect')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-extrabold text-pastel-purple mb-2">—%</div>
-              <div className="text-xs text-muted-foreground">Em breve</div>
+              <div className="text-xs text-muted-foreground">{t('studentProfile.comingSoon')}</div>
             </CardContent>
           </Card>
           
           <Card className="border-2 border-primary/20 bg-gradient-card backdrop-blur-sm hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">⏰ Horas/semana</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{t('studentProfile.kpis.hoursPerWeek')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-extrabold text-primary mb-2">—h</div>
-              <div className="text-xs text-muted-foreground">Em breve</div>
+              <div className="text-xs text-muted-foreground">{t('studentProfile.comingSoon')}</div>
             </CardContent>
           </Card>
         </section>
 
         {/* Progresso por matéria - Placeholder */}
         <section>
-          <h2 className="mb-4 text-2xl font-extrabold text-foreground">Progresso por matéria</h2>
+          <h2 className="mb-4 text-2xl font-extrabold text-foreground">{t('studentProfile.progressBySubject')}</h2>
           <Card className="border-2 border-muted bg-gradient-card backdrop-blur-sm">
             <CardContent className="p-6 text-center">
               <div className="text-muted-foreground mb-2">📝 Em desenvolvimento</div>
               <p className="text-sm text-muted-foreground">
-                O progresso por matéria será exibido aqui quando as aulas forem integradas ao sistema.
+                {t('studentProfile.progressDescription')}
               </p>
             </CardContent>
           </Card>
@@ -157,22 +160,22 @@ export default function AlunoPerfil() {
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card className="border-2 border-pastel-yellow/20 bg-gradient-card backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-xl font-extrabold text-foreground">🏆 Conquistas</CardTitle>
+              <CardTitle className="text-xl font-extrabold text-foreground">{t('studentProfile.achievements.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-sm text-muted-foreground">
-                As conquistas e medalhas serão exibidas aqui conforme o progresso do aluno.
+                {t('studentProfile.achievements.description')}
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-pastel-orange/20 bg-gradient-card backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-xl font-extrabold text-foreground">📄 Relatórios (PDF)</CardTitle>
+              <CardTitle className="text-xl font-extrabold text-foreground">{t('studentProfile.reports.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-sm text-muted-foreground">
-                Os relatórios mensais serão gerados e disponibilizados aqui.
+                {t('studentProfile.reports.description')}
               </div>
             </CardContent>
           </Card>
@@ -184,10 +187,10 @@ export default function AlunoPerfil() {
             to="/pais/dashboard" 
             className="inline-block bg-secondary text-secondary-foreground hover:bg-secondary/80 px-6 py-3 rounded-full font-semibold transition-all duration-300"
           >
-            ← Voltar ao Dashboard dos Pais
+            {t('studentProfile.backToParentsDashboard')}
           </Link>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

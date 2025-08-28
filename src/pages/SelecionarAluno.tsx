@@ -9,6 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, User, MoreVertical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ManageChildModal } from '@/components/children/ManageChildModal';
+import { AppLayout } from '@/components/Layout/AppLayout';
+import type { ChildProfile } from '@/services/students';
 
 export default function SelecionarAluno() {
   const navigate = useNavigate();
@@ -40,36 +42,48 @@ export default function SelecionarAluno() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-playful p-6">
-        <div className="max-w-4xl mx-auto">
-          <Skeleton className="h-12 w-64 mb-8" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <Card key={i}>
-                <CardContent className="p-6">
-                  <Skeleton className="h-16 w-16 rounded-full mb-4" />
-                  <Skeleton className="h-6 w-32 mb-2" />
-                  <Skeleton className="h-4 w-24" />
-                </CardContent>
-              </Card>
-            ))}
+      <AppLayout>
+        <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
+          <div className="max-w-4xl mx-auto">
+            <Skeleton className="h-12 w-64 mb-8" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map(i => (
+                <Card key={i}>
+                  <CardContent className="p-6">
+                    <Skeleton className="h-16 w-16 rounded-full mb-4" />
+                    <Skeleton className="h-6 w-32 mb-2" />
+                    <Skeleton className="h-4 w-24" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-playful p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-foreground mb-2">
-            👶 Selecionar Aluno
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Escolha qual criança está estudando agora
-          </p>
-        </div>
+    <AppLayout>
+      <div className="bg-gradient-to-br from-kid-green/15 via-kid-blue/10 to-kid-yellow/10 min-h-screen p-6 space-y-6">
+        <div className="max-w-4xl mx-auto">
+        <Card className="border-2 border-kid-green/20 bg-gradient-card backdrop-blur-sm mb-8">
+          <CardContent className="p-6">
+            <div className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-kid-green to-kid-blue flex items-center justify-center text-2xl shadow-lg">
+                  👶
+                </div>
+              </div>
+              <h1 className="text-3xl font-extrabold bg-gradient-to-r from-kid-green to-kid-blue bg-clip-text text-transparent mb-2">
+                {t("selectStudent")}
+              </h1>
+              <p className="text-lg text-kid-green">
+                {t("selectStudentDescription")}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {children.map((child) => (
@@ -91,11 +105,11 @@ export default function SelecionarAluno() {
                   {child.first_name} {child.last_name || ''}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {child.grade || 'Estudante'}
+                  {child.grade || t('student')}
                 </p>
                 {activeChild?.id === child.id && (
                   <div className="text-xs bg-primary/20 text-primary border border-primary/30 px-2 py-1 rounded-full font-semibold">
-                    ✓ Ativo
+                    ✓ {t("active")}
                   </div>
                 )}
                 
@@ -104,7 +118,7 @@ export default function SelecionarAluno() {
                   onClick={() => handleSelectChild(child)}
                   className="w-full mt-3 bg-primary hover:bg-primary/90"
                 >
-                  Selecionar
+                  {t("select")}
                 </Button>
               </CardContent>
               
@@ -137,7 +151,7 @@ export default function SelecionarAluno() {
                 {t("children.add")}
               </h3>
               <p className="text-sm text-muted-foreground">
-                Cadastrar nova criança
+                {t("children.add")}
               </p>
             </CardContent>
           </Card>
@@ -146,14 +160,15 @@ export default function SelecionarAluno() {
         {children.length === 0 && (
           <div className="text-center mt-8">
             <p className="text-muted-foreground mb-4">
-              Nenhuma criança cadastrada ainda.
+              {t("children.noChildren")}
             </p>
             <p className="text-sm text-muted-foreground">
-              Clique em "Adicionar Criança" para começar.
+              {t("children.add")} para começar.
             </p>
           </div>
         )}
-      </div>
+          </div>
+        </div>
 
       {/* Add Child Modal */}
       <AddChildModal
@@ -174,6 +189,6 @@ export default function SelecionarAluno() {
           }}
         />
       )}
-    </div>
+    </AppLayout>
   );
 }
